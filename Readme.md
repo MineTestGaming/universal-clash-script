@@ -17,22 +17,20 @@
   
 ## 如何使用
 
-兼容所有支持 JavaScript 脚本的 Clash 客户端。推荐在 `ficlash` 或 `Clash Verge Rev` 中使用。
+兼容所有支持 JavaScript 脚本的 Clash 客户端。推荐在 [FIClash](https://github.com/chen08209/FlClash) 或 [Clash Verge Rev](https://github.com/clash-verge-rev/clash-verge-rev) 中使用。
 
-### 从链接导入
+### 从链接导入脚本
 
 [universal_clash_script](https://github.com/john-walks-slow/universal-clash-script/raw/refs/heads/main/universal_clash_script.js)
 
 [universal_clash_script_manual](https://github.com/john-walks-slow/universal-clash-script/raw/refs/heads/main/universal_clash_script_manual.js)
 
-## 版本
+## Variants
 
 - `universal_clash_script.js`: 地区组为 url-test 类型
 - `universal_clash_script_manual.js`: 地区组为 select 类型
 
 ## 配置说明
-
-所有自定义选项都在脚本文件的顶部，有清晰的注释。
 
 ### 1. 用户配置
 
