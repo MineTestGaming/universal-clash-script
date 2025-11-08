@@ -104,7 +104,7 @@ const REGION_MAP = {
       'hulu.com',
       'disneyplus.com',
       'tv.youtube.com',
-      'clients6.google.com',
+      'clients6.google.com', // 解决 Google AI Studio 锁区
     ],
   },
 }
