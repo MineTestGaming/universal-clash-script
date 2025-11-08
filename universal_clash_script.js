@@ -8,10 +8,20 @@ let DOMAIN_BLACKLIST = []
 
 // 自定义直连名单
 let DOMAIN_WHITELIST = [
-  'pixiv.re',
+  // Switch 下载
   'srv.nintendo.net',
   'd4c.nintendo.net',
   'cdn.nintendo.net',
+  // Windows 更新
+  'windowsupdate.com',
+  'update.microsoft.com',
+  'download.microsoft.com',
+  'wustat.windows.com',
+  'ntservicepack.microsoft.com',
+  'go.microsoft.com',
+  'delivery.mp.microsoft.com',
+  // Pixiv 镜像
+  'pixiv.re',
 ]
 
 // 要过滤的节点关键词 (例如广告、说明等)
