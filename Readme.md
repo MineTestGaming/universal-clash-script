@@ -2,62 +2,51 @@
 
 ## 解决什么问题？
 
-不同的机场（服务商）提供的 Clash 订阅配置五花八门，节点命名混乱，策略组繁杂。
+不同的机场的 Clash 订阅配置五花八门，策略组繁杂。
 
-本脚本通过预处理原始配置文件，将上游配置转换成统一的“最佳实践”。
+本脚本通过预处理原始配置文件，提取出上游配置中的节点信息，转换成统一的最优化配置。
 
-## 核心功能
+## 特性
 
-- **自动地区分组**：自动识别节点名称中的地区信息（如 "HK", "香港", "JP", "日本"），创建对应的 `url-test` 策略组，实现延迟最低的自动选择。
-- **统一的策略组**：将繁杂的节点列表简化为按地区划分的策略组，只需在 `PROXY` 组中选择你想要的地区即可。
-- **智能分流规则**：内置常用流媒体域名规则（如 HBO Max, AbemaTV 等），自动将其流量导向对应地区的策略组。
-- **DNS 优化**：默认启用 `fake-ip` 模式并使用最优 DNS 配置，提升网络体验。
-- **节点过滤**：自动过滤掉订阅中常见的广告、过期信息或无效节点。
-- **高度可定制**：通过修改脚本开头的几个配置项，即可轻松添加自定义规则或调整地区识别关键词。
+- 根据节点名称按地区分类，创建对应的 `url-test` 组。使用时只需选择地区即可获得最优连接。
+- 简洁、优化的分流策略和 DNS 配置，应对绝大多数情况。
+- 可配置的地区分流策略
+- 易于配置的黑白名单
   
-## 如何使用
+## 使用
 
-兼容所有支持 JavaScript 脚本的 Clash 客户端。推荐在 [FIClash](https://github.com/chen08209/FlClash) 或 [Clash Verge Rev](https://github.com/clash-verge-rev/clash-verge-rev) 中使用。
+兼容支持 JavaScript 脚本的 Clash 客户端。推荐在 [FIClash](https://github.com/chen08209/FlClash) 或 [Clash Verge Rev](https://github.com/clash-verge-rev/clash-verge-rev) 中使用。
 
 ### 从链接导入脚本
 
 [universal_clash_script](https://github.com/john-walks-slow/universal-clash-script/raw/refs/heads/main/universal_clash_script.js)
 
-[universal_clash_script_manual](https://github.com/john-walks-slow/universal-clash-script/raw/refs/heads/main/universal_clash_script_manual.js)
+## 配置
 
-## Variants
+你可以通过修改脚本上方常量，快速自定义路由规则。
 
-- `universal_clash_script.js`: 地区组为 url-test 类型
-- `universal_clash_script_manual.js`: 地区组为 select 类型
+### 1. 黑白名单
 
-## 配置说明
+- `DOMAIN_BLACKLIST`: 在此添加的域名或规则将强制代理。
+  - 如果配置的是域名，则默认为 `DOMAIN-SUFFIX`。
+  - 通过逗号分隔符可以指定规则类型，如 `DOMAIN-KEYWORD,foo`。
+- `DOMAIN_WHITELIST`: 在此添加的域名或规则将强制直连。
 
-### 1. 用户配置
-
-- `DOMAIN_BLACKLIST`: 在此添加的域名将强制走代理。
-- `DOMAIN_WHITELIST`: 在此添加的域名将强制直连。
-- `PROXY_FILTER`: 一个正则表达式，用于过滤掉你不需要的节点。默认会过滤包含“流量”、“到期”、“官网”等宣传信息的节点。
-
-### 2. 地区配置中心 (`REGION_MAP`)
-
-定义地区分组的逻辑。你可以按需修改或添加。
+### 2. 地区分流
 
 ```javascript
 const REGION_MAP = {
     "🇭🇰 香港": {
         keywords: ["🇭🇰", "HK", "Hong Kong", "香港"], // 识别节点的关键词
-        domains: ["tvb.com", "viu.tv"],             // 需要此地区代理的域名
+        domains: ["tvb.com", "viu.tv"],             // 需要路由到地区的域名或规则
     },
     "🇯🇵 日本": {
         keywords: ["🇯🇵", "JP", "Japan", "日本"],
-        domains: ["dmm.co.jp", "abema.tv", "nicovideo.jp"],
+        domains: ["dmm.co.jp", "abema.tv", "nicovideo.jp"]
     },
     // ... 其他地区
 };
 ```
-
-- `keywords`: 一个数组，包含用于识别该地区节点的关键词。脚本会根据这些关键词将节点分配到对应的策略组。
-- `domains`: 一个数组，包含需要强制使用该地区代理的域名。脚本会为这些域名创建 `DOMAIN-SUFFIX` 规则。
 
 例如，当你订阅中的某个节点名称包含 "JP"，它会被自动归入 `🇯🇵 日本` 这个 `url-test` 组。同时，当你访问 `dmm.co.jp` 时，流量会自动被路由到 `🇯🇵 日本` 组。
 

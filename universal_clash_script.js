@@ -99,7 +99,13 @@ const REGION_MAP = {
   },
   '🇺🇸 美国': {
     keywords: ['🇺🇸', 'US', 'USA', 'United States', 'America', '美国'],
-    domains: ['max.com', 'hulu.com', 'disneyplus.com', 'tv.youtube.com'],
+    domains: [
+      'max.com',
+      'hulu.com',
+      'disneyplus.com',
+      'tv.youtube.com',
+      'clients6.google.com',
+    ],
   },
 }
 
@@ -111,7 +117,7 @@ const PROXY_GROUP = 'PROXY',
   REJECT_GROUP = 'REJECT',
   ADS_GROUP = 'ADS'
 
-// --- 4. 核心DNS配置 ---
+// --- 4. 核心配置 ---
 const optimalDnsConfig = {
   enable: true,
   listen: '0.0.0.0:1053',
@@ -122,18 +128,25 @@ const optimalDnsConfig = {
   'enhanced-mode': 'fake-ip',
   'fake-ip-range': '198.18.0.1/16',
   'fake-ip-filter': ['geosite:private', 'geosite:connectivity-check'],
-
-  'nameserver-policy': {
-    // 国内域名走国内DNS
-    'geosite:cn,private': [
-      'https://doh.pub/dns-query',
-      'https://dns.alidns.com/dns-query',
-    ],
-  },
-  // 其他域名走国外DNS
+  // 直连域名 DNS
+  'direct-nameserver': [
+    'https://doh.pub/dns-query',
+    'https://dns.alidns.com/dns-query',
+  ],
+  // 国外域名 DNS
   nameserver: ['tls://1.1.1.1', 'tls://8.8.4.4'],
   'proxy-server-nameserver': ['https://doh.pub/dns-query'],
   'default-nameserver': ['223.5.5.5'],
+}
+
+const geoxConfig = {
+  geoip:
+    'https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat/releases/download/latest/geoip.dat',
+  // 使用原版 geosite
+  geosite:
+    'https://testingcf.jsdelivr.net/gh/v2fly/domain-list-community@release/dlc.dat',
+  mmdb: 'https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat/releases/download/latest/country.mmdb',
+  asn: 'https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat/releases/download/latest/GeoLite2-ASN.mmdb',
 }
 
 // --- 5. 辅助函数 ---
@@ -159,6 +172,7 @@ const getProxyRegion = (proxyName) => {
 const main = (config) => {
   // --- 注入基础配置 ---
   config.dns = optimalDnsConfig
+  config['geox-url'] = geoxConfig
 
   // --- 处理节点 ---
   const allProxies = config.proxies
@@ -186,25 +200,26 @@ const main = (config) => {
     .filter((group) => group.proxies.length > 0)
 
   // --- 定义路由规则 ---
+  const createRule = (domainFilter, groupName) =>
+    `${
+      domainFilter.includes(',')
+        ? domainFilter
+        : `DOMAIN-SUFFIX,${domainFilter}`
+    },${groupName}`
   const existingRegionGroupNames = new Set(autoRegionGroups.map((g) => g.name))
-
   const regionSpecificRules = Object.entries(REGION_MAP)
     .filter(
       ([groupName, data]) =>
         existingRegionGroupNames.has(groupName) && data.domains.length > 0
     )
     .flatMap(([groupName, data]) =>
-      data.domains.map((domain) => `DOMAIN-SUFFIX,${domain},${groupName}`)
+      data.domains.map((domain) => createRule(domain, groupName))
     )
 
   config.rules = [
     // 自定义规则
-    ...DOMAIN_BLACKLIST.map(
-      (domain) => `DOMAIN-SUFFIX,${domain},${PROXY_GROUP}`
-    ),
-    ...DOMAIN_WHITELIST.map(
-      (domain) => `DOMAIN-SUFFIX,${domain},${DIRECT_GROUP}`
-    ),
+    ...DOMAIN_BLACKLIST.map((domain) => createRule(domain, PROXY_GROUP)),
+    ...DOMAIN_WHITELIST.map((domain) => createRule(domain, DIRECT_GROUP)),
 
     // 地区分流
     ...regionSpecificRules,
@@ -217,19 +232,22 @@ const main = (config) => {
     `IP-CIDR,10.0.0.0/8,${DIRECT_GROUP},no-resolve`,
     `IP-CIDR,172.16.0.0/12,${DIRECT_GROUP},no-resolve`,
     `IP-CIDR,127.0.0.1/8,${DIRECT_GROUP},no-resolve`,
+    `GEOSITE,private,${DIRECT_GROUP},no-resolve`,
+
+    // 特例
+    `GEOSITE,geolocation-!cn@cn,${DIRECT_GROUP}`, // 可直连的国外站点
+    `GEOSITE,geolocation-cn@!cn,${PROXY_GROUP}`, // 需代理的国内站点
 
     // 国内直连
-    `GEOSITE,tld-cn,${DIRECT_GROUP}`,
-    `GEOSITE,geolocation-cn,${DIRECT_GROUP}`,
-    `GEOSITE,geolocation-!cn@cn,${DIRECT_GROUP}`,
-    `GEOIP,CN,${DIRECT_GROUP}`,
+    `GEOSITE,geolocation-cn,${DIRECT_GROUP}`, // 国内站点
+    `GEOSITE,tld-cn,${DIRECT_GROUP}`, // 国内域名
 
     // 国外代理
-    `GEOSITE,gfw,${PROXY_GROUP}`,
-    `GEOSITE,geolocation-!cn,${PROXY_GROUP}`,
-    `GEOSITE,geolocation-cn@!cn,${PROXY_GROUP}`,
+    `GEOSITE,geolocation-!cn,${PROXY_GROUP}`, // 国外站点
+    `GEOSITE,gfw,${PROXY_GROUP}`, // GFW
 
     // 兜底规则
+    `GEOIP,CN,${DIRECT_GROUP}`, // 国内 IP（放最后，避免不必要的 DNS 解析）
     `MATCH,${DEFAULT_GROUP}`,
   ]
 
