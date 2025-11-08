@@ -12,14 +12,6 @@ let DOMAIN_WHITELIST = [
   'srv.nintendo.net',
   'd4c.nintendo.net',
   'cdn.nintendo.net',
-  // Windows 更新
-  'windowsupdate.com',
-  'update.microsoft.com',
-  'download.microsoft.com',
-  'wustat.windows.com',
-  'ntservicepack.microsoft.com',
-  'go.microsoft.com',
-  'delivery.mp.microsoft.com',
   // Pixiv 镜像
   'pixiv.re',
 ]
@@ -245,19 +237,17 @@ const main = (config) => {
     `GEOSITE,private,${DIRECT_GROUP},no-resolve`,
 
     // 特例
+    `GEOSITE,gfw,${PROXY_GROUP}`, // GFW
     `GEOSITE,geolocation-!cn@cn,${DIRECT_GROUP}`, // 可直连的国外站点
     `GEOSITE,geolocation-cn@!cn,${PROXY_GROUP}`, // 需代理的国内站点
 
-    // 国内直连
+    // 通例
     `GEOSITE,geolocation-cn,${DIRECT_GROUP}`, // 国内站点
-    `GEOSITE,tld-cn,${DIRECT_GROUP}`, // 国内域名
-
-    // 国外代理
     `GEOSITE,geolocation-!cn,${PROXY_GROUP}`, // 国外站点
-    `GEOSITE,gfw,${PROXY_GROUP}`, // GFW
-
-    // 兜底规则
+    `GEOSITE,tld-cn,${DIRECT_GROUP}`, // 国内域名
     `GEOIP,CN,${DIRECT_GROUP}`, // 国内 IP（放最后，避免不必要的 DNS 解析）
+
+    // 兜底
     `MATCH,${DEFAULT_GROUP}`,
   ]
 
