@@ -112,7 +112,6 @@ const REGION_MAP = {
       'hulu.com',
       'disneyplus.com',
       'tv.youtube.com',
-      // 'clients6.google.com', // 解决 Google AI Studio 锁区
     ],
   },
 }
@@ -251,10 +250,10 @@ const main = (config) => {
 
     // 通例
     `GEOSITE,geolocation-cn,${DIRECT_GROUP}`, // 国内站点
-    `GEOSITE,geolocation-!cn,${PROXY_GROUP}`, // 国外站点
     `GEOSITE,tld-cn,${DIRECT_GROUP}`, // 国内域名
     `GEOIP,CN,${DIRECT_GROUP}`, // 国内 IP（放最后，避免不必要的 DNS 解析）
-
+    // `GEOSITE,geolocation-!cn,${PROXY_GROUP}`, // 国外站点（建议跟随兜底设置）
+    
     // 兜底
     `MATCH,${DEFAULT_GROUP}`,
   ]
