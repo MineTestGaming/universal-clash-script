@@ -16,6 +16,12 @@ let DOMAIN_WHITELIST = [
   'pixiv.re',
 ]
 
+// 自定义屏蔽名单
+let DOMAIN_BLOCKLIST = []
+
+// 其他自定义规则
+let CUSTOM_RULES = []
+
 // 要过滤的节点关键词 (例如广告、说明等)
 let PROXY_FILTER = /(http.+\..+)|请|剩余|套餐|流量|优惠|活动|到期|过期|网址/i
 
@@ -106,7 +112,7 @@ const REGION_MAP = {
       'hulu.com',
       'disneyplus.com',
       'tv.youtube.com',
-      'clients6.google.com', // 解决 Google AI Studio 锁区
+      // 'clients6.google.com', // 解决 Google AI Studio 锁区
     ],
   },
 }
@@ -220,8 +226,10 @@ const main = (config) => {
 
   config.rules = [
     // 自定义规则
+    ...DOMAIN_BLOCKLIST.map((domain) => createRule(domain, REJECT_GROUP)),
     ...DOMAIN_BLACKLIST.map((domain) => createRule(domain, PROXY_GROUP)),
     ...DOMAIN_WHITELIST.map((domain) => createRule(domain, DIRECT_GROUP)),
+    ...CUSTOM_RULES,
 
     // 地区分流
     ...regionSpecificRules,
