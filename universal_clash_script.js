@@ -208,12 +208,12 @@ const main = (config) => {
     .filter((group) => group.proxies.length > 0)
 
   // --- 定义路由规则 ---
-  const createRule = (domainFilter, groupName) =>
-    `${
-      domainFilter.includes(',')
-        ? domainFilter
-        : `DOMAIN-SUFFIX,${domainFilter}`
-    },${groupName}`
+  const createRule = (domainFilter, groupName) => [
+    (domainFilter.includes(',') && domainFilter.split(',')[0]) || 'DOMAIN-SUFFIX',
+    domainFilter.split(',')[1] || domainFilter,
+    groupName,
+    domainFilter.split(',')[2]
+  ].filter(v => v !== undefined).join(',')
   const existingRegionGroupNames = new Set(autoRegionGroups.map((g) => g.name))
   const regionSpecificRules = Object.entries(REGION_MAP)
     .filter(
