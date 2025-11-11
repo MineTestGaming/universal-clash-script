@@ -22,6 +22,7 @@ const CUSTOM_WHITELIST = [
   'srv.nintendo.net',
   'd4c.nintendo.net',
   'cdn.nintendo.net',
+  'githubusercontent.com',
 ]
 
 // 自定义屏蔽名单
@@ -155,7 +156,7 @@ const optimalDnsConfig = {
     //'https://dns.alidns.com/dns-query' // 阿里的不好用，play store 解析不到下载地址
   ],
   // 国外 DNS 作为兜底
-  // fallback: ['tls://8.8.4.4', 'tls://1.1.1.1'],
+  fallback: ['tls://8.8.4.4', 'tls://1.1.1.1'],
   'proxy-server-nameserver': ['https://doh.pub/dns-query'], // 解析代理服务器域名
   'default-nameserver': ['223.5.5.5'], // 解析 DNS 域名
 }
