@@ -12,8 +12,6 @@ let DOMAIN_WHITELIST = [
   'srv.nintendo.net',
   'd4c.nintendo.net',
   'cdn.nintendo.net',
-  // Pixiv 镜像
-  'pixiv.re',
 ]
 
 // 自定义屏蔽名单
@@ -25,10 +23,12 @@ let CUSTOM_RULES = []
 // 要过滤的节点关键词 (例如广告、说明等)
 let PROXY_FILTER = /(http.+\..+)|请|剩余|套餐|流量|优惠|活动|到期|过期|网址/i
 
+// 关闭 DNS 和 GEOIP 规则（不推荐）
+let SKIP_DNS = false
+
 // --- 2. 地区配置中心 ---
 // 此处统一管理所有地区信息。
-// 策略组的排序将严格按照此处的 key 顺序。
-// 已大致按地理位置由近及远排序。
+// 大致按地理位置由近及远排序。
 const REGION_MAP = {
   '🇭🇰 香港': {
     keywords: ['🇭🇰', 'HK', 'Hong Kong', '香港'],
@@ -126,24 +126,34 @@ const PROXY_GROUP = 'PROXY',
 
 // --- 4. 核心配置 ---
 const optimalDnsConfig = {
-  enable: true,
+  enable: !SKIP_DNS,
   listen: '0.0.0.0:1053',
   ipv6: false,
   'prefer-h3': false,
   'use-hosts': true,
+  'use-system-hosts': true,  
   'respect-rules': false,
   'enhanced-mode': 'fake-ip',
   'fake-ip-range': '198.18.0.1/16',
   'fake-ip-filter': ['geosite:private', 'geosite:connectivity-check'],
-  // 直连域名 DNS
-  'direct-nameserver': [
-    'https://doh.pub/dns-query',
-    'https://dns.alidns.com/dns-query',
+
+  // 说明：此处 DNS 的目的是匹配 GEOIP,CN，我们希望最快解析出最近的 IP。
+  // 因此优先使用国内 DNS，以国外 DNS 作为兜底，nameserver 和 fallback 会并发请求。
+  // 如果想更加安全（即国外站点不通过国内 DNS），可以开启路由部分的 gfw 和 国外域名规则。用 nameserver-policy 再次分流似乎是多余的。
+  // 而 direct-nameserver 会导致 DIRECT 被解析两次，并不适用当前场景。
+
+  // 优先使用国内 DNS
+  nameserver:[ 
+    'https://doh.pub/dns-query'
+    //'https://dns.alidns.com/dns-query' // 阿里的不好用，play store 解析不到下载地址
+   ],
+  // 国外 DNS 作为兜底
+  fallback: [
+    'tls://8.8.4.4',
+    'tls://1.1.1.1'
   ],
-  // 国外域名 DNS
-  nameserver: ['tls://1.1.1.1', 'tls://8.8.4.4'],
-  'proxy-server-nameserver': ['https://doh.pub/dns-query'],
-  'default-nameserver': ['223.5.5.5'],
+  'proxy-server-nameserver': ['https://doh.pub/dns-query'], // 解析代理服务器域名
+  'default-nameserver': ['223.5.5.5'], // 解析 DNS 域名
 }
 
 const geoxConfig = {
@@ -207,10 +217,14 @@ const main = (config) => {
     .filter((group) => group.proxies.length > 0)
 
   // --- 定义路由规则 ---
+  /** 从用户规则创建规则行 */
   const createRule = (domainFilter, groupName) => [
+    // 无逗号则默认 DOMAIN-SUFFIX，有逗号则使用逗号分割的第一部分
     (domainFilter.includes(',') && domainFilter.split(',')[0]) || 'DOMAIN-SUFFIX',
+    // 无逗号则整个字符串视为域名，有逗号则使用逗号分割的第二部分
     domainFilter.split(',')[1] || domainFilter,
     groupName,
+    // 逗号分隔符的第三部分可以包含额外参数，如 no-resolve
     domainFilter.split(',')[2]
   ].filter(v => v !== undefined).join(',')
   const existingRegionGroupNames = new Set(autoRegionGroups.map((g) => g.name))
@@ -225,10 +239,10 @@ const main = (config) => {
 
   config.rules = [
     // 自定义规则
+    ...CUSTOM_RULES,
     ...DOMAIN_BLOCKLIST.map((domain) => createRule(domain, REJECT_GROUP)),
     ...DOMAIN_BLACKLIST.map((domain) => createRule(domain, PROXY_GROUP)),
     ...DOMAIN_WHITELIST.map((domain) => createRule(domain, DIRECT_GROUP)),
-    ...CUSTOM_RULES,
 
     // 地区分流
     ...regionSpecificRules,
@@ -243,20 +257,22 @@ const main = (config) => {
     `IP-CIDR,127.0.0.1/8,${DIRECT_GROUP},no-resolve`,
     `GEOSITE,private,${DIRECT_GROUP},no-resolve`,
 
-    // 特例
-    `GEOSITE,gfw,${PROXY_GROUP}`, // GFW
-    `GEOSITE,geolocation-!cn@cn,${DIRECT_GROUP}`, // 可直连的国外站点
+    // 高优先级规则
     `GEOSITE,geolocation-cn@!cn,${PROXY_GROUP}`, // 需代理的国内站点
+    `GEOSITE,geolocation-!cn@cn,${DIRECT_GROUP}`, // 可直连的国外站点
+        
+    // 黑名单规则（默认关闭）
+    // 开启的优点：更安全，外网网址直接送代理不经过 dns。缺点：可能导致误判，走不到国内 CDN 等。如果优先考虑上网速度的话无需开启。
+    //`GEOSITE,gfw,${PROXY_GROUP}`, // GFW
+    //`GEOSITE,geolocation-!cn,${PROXY_GROUP}`, // 国外站点
 
-    // 通例
-    `GEOSITE,geolocation-cn,${DIRECT_GROUP}`, // 国内站点
-    `GEOSITE,tld-cn,${DIRECT_GROUP}`, // 国内域名
-    `GEOIP,CN,${DIRECT_GROUP}`, // 国内 IP（放最后，避免不必要的 DNS 解析）
-    // `GEOSITE,geolocation-!cn,${PROXY_GROUP}`, // 国外站点（建议跟随兜底设置）
+    // 白名单规则 
+    `GEOSITE,cn,${DIRECT_GROUP}`, // 国内站点和域名
+    !SKIP_DNS ? `GEOIP,CN,${DIRECT_GROUP}` : false, // 国内IP（GEOIP 规则放最后）
     
     // 兜底
     `MATCH,${DEFAULT_GROUP}`,
-  ]
+  ].filter(v => v)
 
   // --- 创建并重排策略组 ---
   const regionOrder = Object.keys(REGION_MAP)
@@ -312,3 +328,4 @@ const main = (config) => {
 
   return config
 }
+
