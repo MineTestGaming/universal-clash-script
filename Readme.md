@@ -1,4 +1,4 @@
-# 通用 Clash 配置脚本 (Universal Clash Script)
+# 通用 Clash 配置脚本
 
 ## 解决什么问题？
 
