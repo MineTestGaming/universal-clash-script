@@ -146,7 +146,7 @@ const optimalDnsConfig = {
 
   // 说明：此处 DNS 的目的是匹配 GEOIP,CN，我们希望最快解析出最近的 IP。
   // 因此优先使用国内 DNS，以国外 DNS 作为兜底，nameserver 和 fallback 会并发请求。
-  // 如果想更加安全（即国外站点不通过国内 DNS），可以开启路由部分的 gfw 和 国外域名规则。用 nameserver-policy 再次分流似乎是多余的。
+  // 走到 GEOIP 之前已经将外网站点将导向代理，用 nameserver-policy 再次分流是多余的。
   // 而 direct-nameserver 会导致 DIRECT 被解析两次，并不适用当前场景。
 
   // 优先使用国内 DNS
