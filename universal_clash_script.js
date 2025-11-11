@@ -13,12 +13,12 @@ const PROXY_GROUP = 'PROXY',
 // --- 2. 用户配置 ---
 // 自定义代理名单
 const CUSTOM_BLACKLIST = [
-  // 'googleapis.cn', // 如果希望 Google Play 走代理，请放开本行
+  // 'googleapis.cn', // 如果希望 Google Play 下载走代理，请放开本行
 ]
 
 // 自定义直连名单
 const CUSTOM_WHITELIST = [
-  'xn--ngstr-lra8j.com', // 如果希望 Google Play 走代理，请注释本行
+  'xn--ngstr-lra8j.com', // 如果希望 Google Play 下载走代理，请注释本行
   'srv.nintendo.net',
   'd4c.nintendo.net',
   'cdn.nintendo.net',
@@ -269,7 +269,7 @@ const main = (config) => {
     `GEOSITE,geolocation-!cn@cn,${DIRECT_GROUP}`, // 可直连的国外站点
     `GEOSITE,geolocation-cn@!cn,${PROXY_GROUP}`, // 需代理的国内站点
 
-    // 黑名单（跟随 IS_GEOSITE_BLACKLIST_ENABLED）
+    // 黑名单
     ...(IS_GEOSITE_BLACKLIST_ENABLED
       ? [
           `GEOSITE,gfw,${PROXY_GROUP}`, // GFW
