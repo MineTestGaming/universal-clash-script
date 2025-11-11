@@ -139,7 +139,7 @@ const optimalDnsConfig = {
   'prefer-h3': false,
   'use-hosts': true,
   'use-system-hosts': true,
-  'respect-rules': false,
+  'respect-rules': true, // DNS 请求遵循代理规则
   'enhanced-mode': 'fake-ip',
   'fake-ip-range': '198.18.0.1/16',
   'fake-ip-filter': ['geosite:private', 'geosite:connectivity-check'],
