@@ -27,11 +27,17 @@
 
 ### 1. 黑白名单
 
-- `DOMAIN_BLACKLIST`: 在此添加的域名或规则将强制代理。
+- `IS_GEOSITE_BLACKLIST_ENABLED`：是否开启 GFW 和 外网黑名单
+  - **若以安全优先，希望外网网址直接送代理不经过国内 dns，请开启该选项。**
+  - 开启后会导致外网服务（如 Google Play 下载）走不到国内 CDN，请注意。
+
+- `CUSTOM_BLACKLIST`: 在此添加的域名或规则将强制代理。
+
+- `CUSTOM_WHITELIST`: 在此添加的域名或规则将强制直连。
+
+- `CUSTOM_BLOCKLIST`: 在此添加的域名或规则将强制屏蔽。
   - 如果配置的是域名，则默认为 `DOMAIN-SUFFIX`。
   - 使用逗号分隔符可以指定规则类型和额外参数，如 `DOMAIN-KEYWORD,foo` `IP-CIDR,x.x.x.x/32,no-resolve`。
-- `DOMAIN_WHITELIST`: 在此添加的域名或规则将强制直连。
-- `DOMAIN_BLOCKLIST`: 在此添加的域名或规则将强制屏蔽。
 
 ### 2. 地区分流
 
@@ -50,18 +56,6 @@ const REGION_MAP = {
 ```
 
 例如，当你订阅中的某个节点名称包含 "JP"，它会被自动归入 `🇯🇵 日本` 这个 `url-test` 组。同时，当你访问 `dmm.co.jp` 时，流量会自动被路由到 `🇯🇵 日本` 组。
-
-### 3. 路由规则
-
-本脚本的路由规则中，GFW 黑名单默认是关闭的。
-**若以安全优先，希望外网网址直接送代理不经过国内 dns，请放开此处注释。**
-
-```javascript
-// `GEOSITE,gfw,${PROXY_GROUP}`, // GFW
-// `GEOSITE,geolocation-!cn,${PROXY_GROUP}`, // 国外站点
-```
-
-但放开后可能导致走不到国内 CDN，Google Play 下载不动等问题，需要注意。
 
 ## 许可证
 
