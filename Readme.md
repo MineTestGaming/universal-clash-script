@@ -27,10 +27,6 @@
 
 ### 1. 黑白名单
 
-- `IS_GEOSITE_BLACKLIST_ENABLED`：是否开启 GFW 和 外网黑名单
-  - **若以安全优先，希望外网网址直接送代理不经过国内 dns，请开启该选项。**
-  - 开启后会导致外网服务（如 Google Play 下载）走不到国内 CDN，请注意。
-
 - `CUSTOM_BLACKLIST`: 在此添加的域名或规则将强制代理。
 
 - `CUSTOM_WHITELIST`: 在此添加的域名或规则将强制直连。

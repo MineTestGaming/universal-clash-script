@@ -12,10 +12,13 @@ const PROXY_GROUP = 'PROXY',
 
 // --- 2. 用户配置 ---
 // 自定义代理名单
-const CUSTOM_BLACKLIST = []
+const CUSTOM_BLACKLIST = [
+  // 'googleapis.cn', // 如果希望 Google Play 走代理，请放开本行
+]
 
 // 自定义直连名单
 const CUSTOM_WHITELIST = [
+  'xn--ngstr-lra8j.com', // 如果希望 Google Play 走代理，请注释本行
   'srv.nintendo.net',
   'd4c.nintendo.net',
   'cdn.nintendo.net',
@@ -33,19 +36,15 @@ const CUSTOM_PRIORITY_RULES = []
 // 自定义兜底规则
 const CUSTOM_FALLBACK_RULES = []
 
-// 是否开启 GFW 和 外网黑名单
-// 开启的优点：更安全。外网网址不经过国内 DNS。
-// 开启的缺点：导致部分外网站点走不到国内 CDN。（如 Google Play 下载）
-const IS_GEOSITE_BLACKLIST_ENABLED = false
+// 要过滤的节点关键词 (例如广告、说明等)
+const PROXY_FILTER = /(http.+\..+)|请|剩余|套餐|流量|优惠|活动|到期|过期|网址/i
 
-// 开启 GEOSITE_BLACKLIST 时额外的黑名单，用于解决地区不匹配导致的访问问题。
-const CUSTOM_GEOSITE_BLACKLIST = ['googleapis.cn']
+// 是否启用外网 GEOSITE 规则（推荐开启）
+// （少数情况会导致外网走不到国内 CDN，可以通过自定义直连名单解决）
+const IS_GEOSITE_BLACKLIST_ENABLED = true
 
 // 是否启用 DNS 和 GEOIP 规则（推荐开启）
 const IS_DNS_ENABLED = true
-
-// 要过滤的节点关键词 (例如广告、说明等)
-const PROXY_FILTER = /(http.+\..+)|请|剩余|套餐|流量|优惠|活动|到期|过期|网址/i
 
 // --- 3. 地区配置中心 ---
 // 此处统一管理所有地区信息。
@@ -252,12 +251,6 @@ const main = (config) => {
     ...CUSTOM_BLOCKLIST.map((domain) => createRule(domain, REJECT_GROUP)),
     ...CUSTOM_BLACKLIST.map((domain) => createRule(domain, PROXY_GROUP)),
     ...CUSTOM_WHITELIST.map((domain) => createRule(domain, DIRECT_GROUP)),
-    // GEOSITE_BLACKLIST 开启时的额外黑名单
-    ...(IS_GEOSITE_BLACKLIST_ENABLED
-      ? CUSTOM_GEOSITE_BLACKLIST.map((domain) =>
-          createRule(domain, PROXY_GROUP)
-        )
-      : []),
 
     // 地区分流
     ...regionSpecificRules,
