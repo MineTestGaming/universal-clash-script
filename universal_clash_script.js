@@ -22,7 +22,7 @@ const CUSTOM_WHITELIST = [
   'srv.nintendo.net',
   'd4c.nintendo.net',
   'cdn.nintendo.net',
-  'githubusercontent.com',
+  // `GEOSITE,microsoft`,
 ]
 
 // 自定义屏蔽名单
@@ -40,8 +40,8 @@ const CUSTOM_FALLBACK_RULES = []
 // 要过滤的节点关键词 (例如广告、说明等)
 const PROXY_FILTER = /(http.+\..+)|请|剩余|套餐|流量|优惠|活动|到期|过期|网址/i
 
-// 是否启用外网 GEOSITE 规则（推荐开启）
-// （少数情况会导致外网走不到国内 CDN，可以通过自定义直连名单解决）
+// 是否启用外网 GEOSITE 规则
+// （若开启，少数情况会导致外网走不到国内 CDN，可以通过自定义直连名单解决）
 const IS_GEOSITE_BLACKLIST_ENABLED = true
 
 // 是否启用 DNS 和 GEOIP 规则（推荐开启）
@@ -157,6 +157,10 @@ const optimalDnsConfig = {
   ],
   // 国外 DNS 作为兜底
   fallback: ['tls://8.8.4.4', 'tls://1.1.1.1'],
+  // 如果国内 DNS 解析到的不是 CN 的 IP，则采用 fallback 的结果
+  'fallback-filter': {
+    geoip: true,
+  },
   'proxy-server-nameserver': ['https://doh.pub/dns-query'], // 解析代理服务器域名
   'default-nameserver': ['223.5.5.5'], // 解析 DNS 域名
 }
@@ -164,9 +168,8 @@ const optimalDnsConfig = {
 const geoxConfig = {
   geoip:
     'https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat/releases/download/latest/geoip.dat',
-  // 使用原版 geosite
   geosite:
-    'https://testingcf.jsdelivr.net/gh/v2fly/domain-list-community@release/dlc.dat',
+    'https://cdn.jsdelivr.net/gh/Loyalsoldier/v2ray-rules-dat@release/geosite.dat',
   mmdb: 'https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat/releases/download/latest/country.mmdb',
   asn: 'https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat/releases/download/latest/GeoLite2-ASN.mmdb',
 }
@@ -193,6 +196,9 @@ const getProxyRegion = (proxyName) => {
 // --- 6. 主函数 ---
 const main = (config) => {
   // --- 注入基础配置 ---
+  config = {
+    proxies: config.proxies
+  }
   config.dns = optimalDnsConfig
   config['geox-url'] = geoxConfig
 
@@ -266,24 +272,19 @@ const main = (config) => {
     `IP-CIDR,127.0.0.1/8,${DIRECT_GROUP},no-resolve`,
     `GEOSITE,private,${DIRECT_GROUP},no-resolve`,
 
-    // 特例
-    `GEOSITE,geolocation-!cn@cn,${DIRECT_GROUP}`, // 可直连的国外站点
-    `GEOSITE,geolocation-cn@!cn,${PROXY_GROUP}`, // 需代理的国内站点
-    `GEOSITE,category-games@cn,${DIRECT_GROUP}`,
-    `GEOSITE,apple-cn,${DIRECT_GROUP}`,
-    `GEOSITE,google-cn,${DIRECT_GROUP}`,
-    `GEOSITE,microsoft@cn,${DIRECT_GROUP}`,
+    // 白名单
+    `GEOSITE,cn,${DIRECT_GROUP}`,
+    `GEOSITE,win-update,${DIRECT_GROUP}`,
 
     // 黑名单
     ...(IS_GEOSITE_BLACKLIST_ENABLED
       ? [
           `GEOSITE,gfw,${PROXY_GROUP}`, // GFW
-          // `GEOSITE,geolocation-!cn,${PROXY_GROUP}`, // 国外站点
+          // `GEOSITE,geolocation-!cn,${PROXY_GROUP}`, // 国外站点（如果希望所有国外站点代理，解除本行注释）
         ]
       : []),
 
-    // 白名单
-    `GEOSITE,cn,${DIRECT_GROUP}`, // 国内站点和域名
+    // IP
     IS_DNS_ENABLED ? `GEOIP,CN,${DIRECT_GROUP}` : false, // 国内IP（GEOIP 规则放最后）
 
     // 兜底
