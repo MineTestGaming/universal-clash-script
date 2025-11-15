@@ -140,7 +140,6 @@ const optimalDnsConfig = {
   'prefer-h3': false,
   'use-hosts': true,
   'use-system-hosts': true,
-  'respect-rules': true, // DNS 请求遵循代理规则
   'enhanced-mode': 'fake-ip',
   'fake-ip-range': '198.18.0.1/16',
   'fake-ip-filter': ['geosite:private', 'geosite:connectivity-check'],
@@ -155,8 +154,8 @@ const optimalDnsConfig = {
     'https://doh.pub/dns-query',
     //'https://dns.alidns.com/dns-query' // 阿里的不好用，play store 解析不到下载地址
   ],
-  // 国外 DNS 作为兜底
-  fallback: ['tls://8.8.4.4', 'tls://1.1.1.1'],
+  // 国外 DNS 作为兜底（with proxy）
+  fallback: ['tls://8.8.4.4#proxy', 'tls://1.1.1.1#proxy'],
   // 如果国内 DNS 解析到的不是 CN 的 IP，则采用 fallback 的结果
   'fallback-filter': {
     geoip: true,
@@ -169,7 +168,7 @@ const geoxConfig = {
   geoip:
     'https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat/releases/download/latest/geoip.dat',
   geosite:
-    'https://cdn.jsdelivr.net/gh/Loyalsoldier/v2ray-rules-dat@release/geosite.dat',
+    'https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat/releases/download/latest/geosite.dat',
   mmdb: 'https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat/releases/download/latest/country.mmdb',
   asn: 'https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat/releases/download/latest/GeoLite2-ASN.mmdb',
 }
@@ -280,7 +279,7 @@ const main = (config) => {
     ...(IS_GEOSITE_BLACKLIST_ENABLED
       ? [
           `GEOSITE,gfw,${PROXY_GROUP}`, // GFW
-          // `GEOSITE,geolocation-!cn,${PROXY_GROUP}`, // 国外站点（如果希望所有国外站点代理，解除本行注释）
+          // `GEOSITE,geolocation-!cn,${PROXY_GROUP}`, // 国外站点
         ]
       : []),
 
