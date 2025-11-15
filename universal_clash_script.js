@@ -269,12 +269,16 @@ const main = (config) => {
     // 特例
     `GEOSITE,geolocation-!cn@cn,${DIRECT_GROUP}`, // 可直连的国外站点
     `GEOSITE,geolocation-cn@!cn,${PROXY_GROUP}`, // 需代理的国内站点
+    `GEOSITE,category-games@cn,${DIRECT_GROUP}`,
+    `GEOSITE,apple-cn,${DIRECT_GROUP}`,
+    `GEOSITE,google-cn,${DIRECT_GROUP}`,
+    `GEOSITE,microsoft@cn,${DIRECT_GROUP}`,
 
     // 黑名单
     ...(IS_GEOSITE_BLACKLIST_ENABLED
       ? [
           `GEOSITE,gfw,${PROXY_GROUP}`, // GFW
-          `GEOSITE,geolocation-!cn,${PROXY_GROUP}`, // 国外站点
+          // `GEOSITE,geolocation-!cn,${PROXY_GROUP}`, // 国外站点
         ]
       : []),
 
