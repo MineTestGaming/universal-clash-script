@@ -31,8 +31,8 @@ const CUSTOM_BLOCKLIST = [
   'firebaseremoteconfigrealtime.googleapis.com',
   'firebaseremoteconfig.googleapis.com',
   'amplesound.net',
-  'IP-CIDR,159.203.227.87/32',
-  'IP-CIDR,50.116.38.191/32',
+  'IP-CIDR,159.203.227.87/32,no-resolve',
+  'IP-CIDR,50.116.38.191/32,no-resolve',
 ]
 
 // 其他自定义规则
