@@ -1,8 +1,8 @@
-# 通用 Clash 配置脚本 (Universal Clash Script)
+# 通用 Clash 配置脚本
 
 ## 解决什么问题？
 
-不同的机场的 Clash 订阅配置五花八门，策略组繁杂，自定义和迁移都很困难。
+不同的机场的 Clash 订阅配置繁杂，自定义和迁移都很困难。
 
 本脚本通过预处理原始配置文件，提取出上游配置中的节点信息，转换成统一的最优化配置。
 
@@ -27,10 +27,13 @@
 
 ### 1. 黑白名单
 
-- `DOMAIN_BLACKLIST`: 在此添加的域名或规则将强制代理。
+- `CUSTOM_BLACKLIST`: 在此添加的域名或规则将强制代理。
+
+- `CUSTOM_WHITELIST`: 在此添加的域名或规则将强制直连。
+
+- `CUSTOM_BLOCKLIST`: 在此添加的域名或规则将强制屏蔽。
   - 如果配置的是域名，则默认为 `DOMAIN-SUFFIX`。
-  - 通过逗号分隔符可以指定规则类型，如 `DOMAIN-KEYWORD,foo`。
-- `DOMAIN_WHITELIST`: 在此添加的域名或规则将强制直连。
+  - 使用逗号分隔符可以指定规则类型和额外参数，如 `DOMAIN-KEYWORD,foo` `IP-CIDR,x.x.x.x/32,no-resolve`。
 
 ### 2. 地区分流
 
