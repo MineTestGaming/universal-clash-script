@@ -2,27 +2,59 @@
  * 通用 Clash 配置脚本，按地区自动分组
  */
 
-// --- 1. 用户配置 ---
+// --- 1. 内部常量 ---
+const PROXY_GROUP = 'PROXY',
+  MANUAL_GROUP = 'MANUAL',
+  DIRECT_GROUP = 'DIRECT',
+  DEFAULT_GROUP = 'DEFAULT',
+  REJECT_GROUP = 'REJECT',
+  ADS_GROUP = 'ADS'
+
+// --- 2. 用户配置 ---
 // 自定义代理名单
-let DOMAIN_BLACKLIST = []
+const CUSTOM_BLACKLIST = []
 
 // 自定义直连名单
-let DOMAIN_WHITELIST = [
-  // Switch 下载
+const CUSTOM_WHITELIST = [
+  'xn--ngstr-lra8j.com', // Google Play 下载
   'srv.nintendo.net',
   'd4c.nintendo.net',
   'cdn.nintendo.net',
-  // Pixiv 镜像
-  'pixiv.re',
+  `microsoft.com`,
+  `PROCESS-NAME,WinStore.App.exe`,
+  `PROCESS-NAME,svchost.exe`,
+  `PROCESS-NAME,SystemSettings.exe`,
 ]
 
-// 要过滤的节点关键词 (例如广告、说明等)
-let PROXY_FILTER = /(http.+\..+)|请|剩余|套餐|流量|优惠|活动|到期|过期|网址/i
+// 自定义屏蔽名单
+const CUSTOM_BLOCKLIST = [
+  'firebaseremoteconfigrealtime.googleapis.com',
+  'firebaseremoteconfig.googleapis.com',
+  'amplesound.net',
+  'IP-CIDR,159.203.227.87/32',
+  'IP-CIDR,50.116.38.191/32',
+]
 
-// --- 2. 地区配置中心 ---
+// 其他自定义规则
+const CUSTOM_PRIORITY_RULES = []
+
+// 自定义兜底规则
+const CUSTOM_FALLBACK_RULES = []
+
+// 要过滤的节点关键词 (例如广告、说明等)
+const PROXY_FILTER = /(http.+\..+)|请|剩余|套餐|流量|优惠|活动|到期|过期|网址/i
+
+// 是否启用外网 GEOSITE 规则
+// （若开启，少数情况会导致外网走不到国内 CDN，可以通过自定义直连名单解决）
+const IS_GFW_BLACKLIST_ENABLED = true
+const IS_GEOLOCATION_BLACKLIST_ENABLED = false
+
+// 是否启用 DNS 和 GEOIP 规则（推荐开启）
+const IS_DNS_ENABLED = true
+
+// --- 3. 地区配置中心 ---
 // 此处统一管理所有地区信息。
-// 策略组的排序将严格按照此处的 key 顺序。
-// 已大致按地理位置由近及远排序。
+// 大致按地理位置由近及远排序。
 const REGION_MAP = {
   '🇭🇰 香港': {
     keywords: ['🇭🇰', 'HK', 'Hong Kong', '香港'],
@@ -101,52 +133,47 @@ const REGION_MAP = {
   },
   '🇺🇸 美国': {
     keywords: ['🇺🇸', 'US', 'USA', 'United States', 'America', '美国'],
-    domains: [
-      'max.com',
-      'hulu.com',
-      'disneyplus.com',
-      'tv.youtube.com',
-      'clients6.google.com', // 解决 Google AI Studio 锁区
-    ],
+    domains: ['max.com', 'hulu.com', 'disneyplus.com', 'tv.youtube.com'],
   },
 }
 
-// --- 3. 内部常量 ---
-const PROXY_GROUP = 'PROXY',
-  MANUAL_GROUP = 'MANUAL',
-  DIRECT_GROUP = 'DIRECT',
-  DEFAULT_GROUP = 'DEFAULT',
-  REJECT_GROUP = 'REJECT',
-  ADS_GROUP = 'ADS'
-
 // --- 4. 核心配置 ---
 const optimalDnsConfig = {
-  enable: true,
+  enable: IS_DNS_ENABLED,
   listen: '0.0.0.0:1053',
   ipv6: false,
   'prefer-h3': false,
   'use-hosts': true,
-  'respect-rules': false,
+  'use-system-hosts': true,
   'enhanced-mode': 'fake-ip',
   'fake-ip-range': '198.18.0.1/16',
   'fake-ip-filter': ['geosite:private', 'geosite:connectivity-check'],
-  // 直连域名 DNS
-  'direct-nameserver': [
+
+  // 说明：此处 DNS 的目的是匹配 GEOIP,CN，我们希望最快解析出最近的 IP。
+  // 因此优先使用国内 DNS，以国外 DNS 作为兜底，nameserver 和 fallback 会并发请求。
+  // 走到 GEOIP 之前已经将外网站点将导向代理，用 nameserver-policy 再次分流是多余的。
+  // 而 direct-nameserver 会导致 DIRECT 被解析两次，并不适用当前场景。
+
+  // 优先使用国内 DNS
+  nameserver: [
     'https://doh.pub/dns-query',
-    'https://dns.alidns.com/dns-query',
+    //'https://dns.alidns.com/dns-query' // 阿里的不好用，play store 解析不到下载地址
   ],
-  // 国外域名 DNS
-  nameserver: ['tls://1.1.1.1', 'tls://8.8.4.4'],
-  'proxy-server-nameserver': ['https://doh.pub/dns-query'],
-  'default-nameserver': ['223.5.5.5'],
+  // 国外 DNS 作为兜底（with proxy）
+  fallback: ['tls://8.8.4.4#proxy', 'tls://1.1.1.1#proxy'],
+  // 如果国内 DNS 解析到的不是 CN 的 IP，则采用 fallback 的结果
+  'fallback-filter': {
+    geoip: true,
+  },
+  'proxy-server-nameserver': ['https://doh.pub/dns-query'], // 解析代理服务器域名
+  'default-nameserver': ['223.5.5.5'], // 解析 DNS 域名
 }
 
 const geoxConfig = {
   geoip:
     'https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat/releases/download/latest/geoip.dat',
-  // 使用原版 geosite
   geosite:
-    'https://testingcf.jsdelivr.net/gh/v2fly/domain-list-community@release/dlc.dat',
+    'https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat/releases/download/latest/geosite.dat',
   mmdb: 'https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat/releases/download/latest/country.mmdb',
   asn: 'https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat/releases/download/latest/GeoLite2-ASN.mmdb',
 }
@@ -173,6 +200,9 @@ const getProxyRegion = (proxyName) => {
 // --- 6. 主函数 ---
 const main = (config) => {
   // --- 注入基础配置 ---
+  config = {
+    proxies: config.proxies,
+  }
   config.dns = optimalDnsConfig
   config['geox-url'] = geoxConfig
 
@@ -202,12 +232,20 @@ const main = (config) => {
     .filter((group) => group.proxies.length > 0)
 
   // --- 定义路由规则 ---
+  /** 从用户规则创建规则行 */
   const createRule = (domainFilter, groupName) =>
-    `${
-      domainFilter.includes(',')
-        ? domainFilter
-        : `DOMAIN-SUFFIX,${domainFilter}`
-    },${groupName}`
+    [
+      // 无逗号则默认 DOMAIN-SUFFIX，有逗号则使用逗号分割的第一部分
+      (domainFilter.includes(',') && domainFilter.split(',')[0]) ||
+        'DOMAIN-SUFFIX',
+      // 无逗号则整个字符串视为域名，有逗号则使用逗号分割的第二部分
+      domainFilter.split(',')[1] || domainFilter,
+      groupName,
+      // 逗号分隔符的第三部分可以包含额外参数，如 no-resolve
+      domainFilter.split(',')[2],
+    ]
+      .filter((v) => v !== undefined)
+      .join(',')
   const existingRegionGroupNames = new Set(autoRegionGroups.map((g) => g.name))
   const regionSpecificRules = Object.entries(REGION_MAP)
     .filter(
@@ -220,8 +258,10 @@ const main = (config) => {
 
   config.rules = [
     // 自定义规则
-    ...DOMAIN_BLACKLIST.map((domain) => createRule(domain, PROXY_GROUP)),
-    ...DOMAIN_WHITELIST.map((domain) => createRule(domain, DIRECT_GROUP)),
+    ...CUSTOM_PRIORITY_RULES,
+    ...CUSTOM_BLOCKLIST.map((domain) => createRule(domain, REJECT_GROUP)),
+    ...CUSTOM_BLACKLIST.map((domain) => createRule(domain, PROXY_GROUP)),
+    ...CUSTOM_WHITELIST.map((domain) => createRule(domain, DIRECT_GROUP)),
 
     // 地区分流
     ...regionSpecificRules,
@@ -234,22 +274,26 @@ const main = (config) => {
     `IP-CIDR,10.0.0.0/8,${DIRECT_GROUP},no-resolve`,
     `IP-CIDR,172.16.0.0/12,${DIRECT_GROUP},no-resolve`,
     `IP-CIDR,127.0.0.1/8,${DIRECT_GROUP},no-resolve`,
-    `GEOSITE,private,${DIRECT_GROUP},no-resolve`,
+    `GEOSITE,private,${DIRECT_GROUP}`,
 
-    // 特例
-    `GEOSITE,gfw,${PROXY_GROUP}`, // GFW
-    `GEOSITE,geolocation-!cn@cn,${DIRECT_GROUP}`, // 可直连的国外站点
-    `GEOSITE,geolocation-cn@!cn,${PROXY_GROUP}`, // 需代理的国内站点
+    // 白名单
+    `GEOSITE,cn,${DIRECT_GROUP}`,
+    `GEOSITE,win-update,${DIRECT_GROUP}`,
+    `GEOSITE,geolocation-!cn@cn,${DIRECT_GROUP}`,
 
-    // 通例
-    `GEOSITE,geolocation-cn,${DIRECT_GROUP}`, // 国内站点
-    `GEOSITE,geolocation-!cn,${PROXY_GROUP}`, // 国外站点
-    `GEOSITE,tld-cn,${DIRECT_GROUP}`, // 国内域名
-    `GEOIP,CN,${DIRECT_GROUP}`, // 国内 IP（放最后，避免不必要的 DNS 解析）
+    //黑名单
+    IS_GFW_BLACKLIST_ENABLED ? `GEOSITE,gfw,${PROXY_GROUP}` : undefined,
+    IS_GEOLOCATION_BLACKLIST_ENABLED
+      ? `GEOSITE,geolocation-!cn,${PROXY_GROUP}`
+      : undefined,
+
+    // IP
+    IS_DNS_ENABLED ? `GEOIP,CN,${DIRECT_GROUP}` : false, // 国内IP（GEOIP 规则放最后）
 
     // 兜底
+    ...CUSTOM_FALLBACK_RULES,
     `MATCH,${DEFAULT_GROUP}`,
-  ]
+  ].filter((v) => v)
 
   // --- 创建并重排策略组 ---
   const regionOrder = Object.keys(REGION_MAP)
