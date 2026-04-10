@@ -27,19 +27,100 @@ const CUSTOM_BLOCKLIST = [
   'IP-CIDR,159.203.227.87/32,no-resolve',
   'IP-CIDR,50.116.38.191/32,no-resolve'
 ]
-
+// 其他自定义规则
+const CUSTOM_PRIORITY_RULES =[]
+// 自定义兜底规则
+const CUSTOM_FALLBACK_RULES =[
+  // IP 地址默认直连
+  //'IP-CIDR,0.0.0.0/0,DIRECT,no-resolve'
+]
 const PROXY_FILTER = /(http.+\..+)|请|剩余|套餐|流量|优惠|活动|到期|过期|网址/i
 const IS_GFW_BLACKLIST_ENABLED = true
 const IS_DNS_ENABLED = true
 
 // --- 3. 地区配置中心 ---
 const REGION_MAP = {
-  '🇭🇰 香港': { keywords:['🇭🇰', 'HK', 'Hong Kong', '香港'], domains:['tvb.com', 'viu.tv'] },
-  '🇹🇼 台湾': { keywords:['🇹🇼', 'TW', 'Taiwan', '台湾'], domains:['ani.gamer.com.tw'] },
-  '🇯🇵 日本': { keywords:['🇯🇵', 'JP', 'Japan', '日本'], domains:['dmm.co.jp', 'abema.tv'] },
-  '🇸🇬 新加坡': { keywords:['🇸🇬', 'SG', 'Singapore', '新加坡'], domains:[] },
-  '🇰🇷 韩国': { keywords:['🇰🇷', 'KR', 'Korea', '韩国'], domains:[] },
-  '🇺🇸 美国': { keywords:['🇺🇸', 'US', 'USA', 'United States', '美国'], domains:['max.com', 'hulu.com'] },
+  '🇭🇰 香港': {
+    keywords: ['🇭🇰', 'HK', 'Hong Kong', '香港'],
+    domains:['tvb.com', 'viu.tv', 'lihkg.com', 'hkgolden.com'],
+  },
+  '🇹🇼 台湾': {
+    keywords:['🇹🇼', 'TW', 'Taiwan', '台湾', '台灣'],
+    domains:[
+      'ani.gamer.com.tw',
+      'litv.tv',
+      'ptt.cc',
+      'dcard.tw',
+      'mobile01.com',
+      'gamer.com.tw',
+    ],
+  },
+  '🇰🇷 韩国': {
+    keywords:['🇰🇷', 'KR', 'Korea', 'South Korea', '韩国'],
+    domains:[],
+  },
+  '🇯🇵 日本': {
+    keywords: ['🇯🇵', 'JP', 'Japan', '日本'],
+    domains: ['dmm.co.jp', 'abema.tv', 'nicovideo.jp'],
+  },
+  '🇸🇬 新加坡': {
+    keywords:['🇸🇬', 'SG', 'Singapore', '新加坡', '狮城'],
+    domains:[],
+  },
+  '🇻🇳 越南': {
+    keywords: ['🇻🇳', 'VN', 'Vietnam', '越南'],
+    domains:[],
+  },
+  '🇹🇭 泰国': {
+    keywords:['🇹🇭', 'TH', 'Thailand', '泰国'],
+    domains:[],
+  },
+  '🇲🇾 马来西亚': {
+    keywords: ['🇲🇾', 'MY', 'Malaysia', '马来西亚', '大马'],
+    domains:[],
+  },
+  '🇮🇳 印度': {
+    keywords:['🇮🇳', 'IN', 'India', '印度'],
+    domains:[],
+  },
+  '🇹🇷 土耳其': {
+    keywords: ['🇹🇷', 'TR', 'Turkey', '土耳其'],
+    domains:[],
+  },
+  '🇷🇺 俄罗斯': {
+    keywords:['🇷🇺', 'RU', 'Russia', '俄罗斯'],
+    domains:[],
+  },
+  '🇦🇺 澳大利亚': {
+    keywords: ['🇦🇺', 'AU', 'Australia', '澳大利亚', '澳洲'],
+    domains:[],
+  },
+  '🇩🇪 德国': {
+    keywords:['🇩🇪', 'DE', 'Germany', '德国'],
+    domains: [],
+  },
+  '🇫🇷 法国': {
+    keywords:['🇫🇷', 'FR', 'France', '法国'],
+    domains:[],
+  },
+  '🇳🇱 荷兰': {
+    keywords: ['🇳🇱', 'NL', 'Netherlands', '荷兰'],
+    domains: [],
+  },
+  '🇬🇧 英国': {
+    keywords:['🇬🇧', 'UK', 'United Kingdom', 'England', '英国'],
+    domains: ['bbc.co.uk'],
+  },
+  '🇨🇦 加拿大': {
+    keywords:['🇨🇦', 'CA', 'Canada', '加拿大'],
+    domains:[],
+  },
+  '🇺🇸 美国': {
+    keywords: ['🇺🇸', 'US', 'USA', 'United States', 'America', '美国'],
+    domains:['max.com', 'hulu.com', 'disneyplus.com', 'tv.youtube.com',
+    "cdn.usefathom.com","claude.ai","anthropic.com","claudeusercontent.com"
+    ],
+  },
 }
 
 // --- 4. 核心配置 ---
@@ -47,14 +128,31 @@ const optimalDnsConfig = {
   enable: IS_DNS_ENABLED,
   listen: '0.0.0.0:1053',
   ipv6: false,
+  'prefer-h3': false,
+  'use-hosts': true,
+  'use-system-hosts': true,
   'enhanced-mode': 'fake-ip',
   'fake-ip-range': '198.18.0.1/16',
-  'fake-ip-filter':['geosite:private', 'geosite:connectivity-check','+.argotunnel.com'],
-  nameserver:['https://doh.pub/dns-query'],
+  'fake-ip-filter':['geosite:private', 'geosite:connectivity-check'],
+
+  // 说明：此处 DNS 的目的是匹配 GEOIP,CN，我们希望最快解析出最近的 IP。
+  // 因此优先使用国内 DNS，以国外 DNS 作为兜底，nameserver 和 fallback 会并发请求。
+  // 走到 GEOIP 之前已经将外网站点将导向代理，用 nameserver-policy 再次分流是多余的。
+  // 而 direct-nameserver 会导致 DIRECT 被解析两次，并不适用当前场景。
+
+  // 优先使用国内 DNS
+  nameserver:[
+    'https://doh.pub/dns-query',
+    //'https://dns.alidns.com/dns-query' // 阿里的不好用，play store 解析不到下载地址
+  ],
+  // 国外 DNS 作为兜底（with proxy）
   fallback:['tls://8.8.4.4#proxy', 'tls://1.1.1.1#proxy'],
-  'fallback-filter': { geoip: true },
-  'proxy-server-nameserver':['https://doh.pub/dns-query'],
-  'default-nameserver':['223.5.5.5']
+  // 如果国内 DNS 解析到的不是 CN 的 IP，则采用 fallback 的结果
+  'fallback-filter': {
+    geoip: true,
+  },
+  'proxy-server-nameserver':['https://doh.pub/dns-query'], // 解析代理服务器域名
+  'default-nameserver':['223.5.5.5'], // 解析 DNS 域名
 }
 
 // --- 5. 辅助函数 ---
@@ -169,6 +267,7 @@ const main = (config) => {
     .flatMap(([name, data]) => data.domains.map(d => createRule(d, name)))
 
   config.rules = [
+    ...CUSTOM_PRIORITY_RULES,
     ...CUSTOM_BLOCKLIST.map(d => createRule(d, REJECT_GROUP)),
     ...CUSTOM_BLACKLIST.map(d => createRule(d, PROXY_GROUP)),
     ...CUSTOM_WHITELIST.map(d => createRule(d, DIRECT_GROUP)),
@@ -178,6 +277,7 @@ const main = (config) => {
     `GEOSITE,cn,${DIRECT_GROUP}`,
     IS_GFW_BLACKLIST_ENABLED ? `GEOSITE,gfw,${PROXY_GROUP}` : undefined,
     IS_DNS_ENABLED ? `GEOIP,CN,${DIRECT_GROUP}` : false,
+    ...CUSTOM_FALLBACK_RULES,
     `MATCH,${DEFAULT_GROUP}`
   ].filter(Boolean)
 
