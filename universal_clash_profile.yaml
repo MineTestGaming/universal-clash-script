@@ -3,9 +3,8 @@ proxy-providers:
   provider_1:
     type: http
     url: 'your_subscription_url'
-    path: ./providers/provider_1.yaml
-    interval: 0
     proxy: DIRECT
+    interval: 3000
     size-limit: 0
     filter: '^(?!.*(请|剩余|套餐|流量|优惠|活动|到期|过期|网址)).*$'
     health-check:
