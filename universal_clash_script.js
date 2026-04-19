@@ -16,21 +16,27 @@ const PROXY_GROUP = 'PROXY',
 // --- 2. 用户配置 ---
 const CUSTOM_BLACKLIST = ['argotunnel.com']
 const CUSTOM_WHITELIST = [
-  'xn--ngstr-lra8j.com', 'srv.nintendo.net', 'd4c.nintendo.net', 'cdn.nintendo.net',
-  'PROCESS-NAME,WinStore.App.exe', 'PROCESS-NAME,SystemSettings.exe',
-  'ppzhilian.com', 'gh-proxy.org', 'gh-proxy.com'
+  'xn--ngstr-lra8j.com',
+  'srv.nintendo.net',
+  'd4c.nintendo.net',
+  'cdn.nintendo.net',
+  'PROCESS-NAME,WinStore.App.exe',
+  'PROCESS-NAME,SystemSettings.exe',
+  'ppzhilian.com',
+  'gh-proxy.org',
+  'gh-proxy.com',
 ]
 const CUSTOM_BLOCKLIST = [
   'firebaseremoteconfigrealtime.googleapis.com',
   'firebaseremoteconfig.googleapis.com',
   'amplesound.net',
   'IP-CIDR,159.203.227.87/32,no-resolve',
-  'IP-CIDR,50.116.38.191/32,no-resolve'
+  'IP-CIDR,50.116.38.191/32,no-resolve',
 ]
 // 其他自定义规则
-const CUSTOM_PRIORITY_RULES =[]
+const CUSTOM_PRIORITY_RULES = []
 // 自定义兜底规则
-const CUSTOM_FALLBACK_RULES =[
+const CUSTOM_FALLBACK_RULES = [
   // IP 地址默认直连
   //'IP-CIDR,0.0.0.0/0,DIRECT,no-resolve'
 ]
@@ -42,11 +48,11 @@ const IS_DNS_ENABLED = true
 const REGION_MAP = {
   '🇭🇰 香港': {
     keywords: ['🇭🇰', 'HK', 'Hong Kong', '香港'],
-    domains:['tvb.com', 'viu.tv', 'lihkg.com', 'hkgolden.com'],
+    domains: ['tvb.com', 'viu.tv', 'lihkg.com', 'hkgolden.com'],
   },
   '🇹🇼 台湾': {
-    keywords:['🇹🇼', 'TW', 'Taiwan', '台湾', '台灣'],
-    domains:[
+    keywords: ['🇹🇼', 'TW', 'Taiwan', '台湾', '台灣'],
+    domains: [
       'ani.gamer.com.tw',
       'litv.tv',
       'ptt.cc',
@@ -56,69 +62,76 @@ const REGION_MAP = {
     ],
   },
   '🇰🇷 韩国': {
-    keywords:['🇰🇷', 'KR', 'Korea', 'South Korea', '韩国'],
-    domains:[],
+    keywords: ['🇰🇷', 'KR', 'Korea', 'South Korea', '韩国'],
+    domains: [],
   },
   '🇯🇵 日本': {
     keywords: ['🇯🇵', 'JP', 'Japan', '日本'],
     domains: ['dmm.co.jp', 'abema.tv', 'nicovideo.jp'],
   },
   '🇸🇬 新加坡': {
-    keywords:['🇸🇬', 'SG', 'Singapore', '新加坡', '狮城'],
-    domains:[],
+    keywords: ['🇸🇬', 'SG', 'Singapore', '新加坡', '狮城'],
+    domains: [],
   },
   '🇻🇳 越南': {
     keywords: ['🇻🇳', 'VN', 'Vietnam', '越南'],
-    domains:[],
+    domains: [],
   },
   '🇹🇭 泰国': {
-    keywords:['🇹🇭', 'TH', 'Thailand', '泰国'],
-    domains:[],
+    keywords: ['🇹🇭', 'TH', 'Thailand', '泰国'],
+    domains: [],
   },
   '🇲🇾 马来西亚': {
     keywords: ['🇲🇾', 'MY', 'Malaysia', '马来西亚', '大马'],
-    domains:[],
+    domains: [],
   },
   '🇮🇳 印度': {
-    keywords:['🇮🇳', 'IN', 'India', '印度'],
-    domains:[],
+    keywords: ['🇮🇳', 'IN', 'India', '印度'],
+    domains: [],
   },
   '🇹🇷 土耳其': {
     keywords: ['🇹🇷', 'TR', 'Turkey', '土耳其'],
-    domains:[],
+    domains: [],
   },
   '🇷🇺 俄罗斯': {
-    keywords:['🇷🇺', 'RU', 'Russia', '俄罗斯'],
-    domains:[],
+    keywords: ['🇷🇺', 'RU', 'Russia', '俄罗斯'],
+    domains: [],
   },
   '🇦🇺 澳大利亚': {
     keywords: ['🇦🇺', 'AU', 'Australia', '澳大利亚', '澳洲'],
-    domains:[],
+    domains: [],
   },
   '🇩🇪 德国': {
-    keywords:['🇩🇪', 'DE', 'Germany', '德国'],
+    keywords: ['🇩🇪', 'DE', 'Germany', '德国'],
     domains: [],
   },
   '🇫🇷 法国': {
-    keywords:['🇫🇷', 'FR', 'France', '法国'],
-    domains:[],
+    keywords: ['🇫🇷', 'FR', 'France', '法国'],
+    domains: [],
   },
   '🇳🇱 荷兰': {
     keywords: ['🇳🇱', 'NL', 'Netherlands', '荷兰'],
     domains: [],
   },
   '🇬🇧 英国': {
-    keywords:['🇬🇧', 'UK', 'United Kingdom', 'England', '英国'],
+    keywords: ['🇬🇧', 'UK', 'United Kingdom', 'England', '英国'],
     domains: ['bbc.co.uk'],
   },
   '🇨🇦 加拿大': {
-    keywords:['🇨🇦', 'CA', 'Canada', '加拿大'],
-    domains:[],
+    keywords: ['🇨🇦', 'CA', 'Canada', '加拿大'],
+    domains: [],
   },
   '🇺🇸 美国': {
     keywords: ['🇺🇸', 'US', 'USA', 'United States', 'America', '美国'],
-    domains:['max.com', 'hulu.com', 'disneyplus.com', 'tv.youtube.com',
-    "cdn.usefathom.com","claude.ai","anthropic.com","claudeusercontent.com"
+    domains: [
+      'max.com',
+      'hulu.com',
+      'disneyplus.com',
+      'tv.youtube.com',
+      'cdn.usefathom.com',
+      'claude.ai',
+      'anthropic.com',
+      'claudeusercontent.com',
     ],
   },
 }
@@ -133,7 +146,7 @@ const optimalDnsConfig = {
   'use-system-hosts': true,
   'enhanced-mode': 'fake-ip',
   'fake-ip-range': '198.18.0.1/16',
-  'fake-ip-filter':['geosite:private', 'geosite:connectivity-check'],
+  'fake-ip-filter': ['geosite:private', 'geosite:connectivity-check'],
 
   // 说明：此处 DNS 的目的是匹配 GEOIP,CN，我们希望最快解析出最近的 IP。
   // 因此优先使用国内 DNS，以国外 DNS 作为兜底，nameserver 和 fallback 会并发请求。
@@ -141,18 +154,18 @@ const optimalDnsConfig = {
   // 而 direct-nameserver 会导致 DIRECT 被解析两次，并不适用当前场景。
 
   // 优先使用国内 DNS
-  nameserver:[
+  nameserver: [
     'https://doh.pub/dns-query',
     //'https://dns.alidns.com/dns-query' // 阿里的不好用，play store 解析不到下载地址
   ],
   // 国外 DNS 作为兜底（with proxy）
-  fallback:['tls://8.8.4.4#proxy', 'tls://1.1.1.1#proxy'],
+  fallback: ['tls://8.8.4.4#proxy', 'tls://1.1.1.1#proxy'],
   // 如果国内 DNS 解析到的不是 CN 的 IP，则采用 fallback 的结果
   'fallback-filter': {
     geoip: true,
   },
-  'proxy-server-nameserver':['https://doh.pub/dns-query'], // 解析代理服务器域名
-  'default-nameserver':['223.5.5.5'], // 解析 DNS 域名
+  'proxy-server-nameserver': ['https://doh.pub/dns-query'], // 解析代理服务器域名
+  'default-nameserver': ['223.5.5.5'], // 解析 DNS 域名
 }
 
 const optimalTunConfig = {
@@ -170,7 +183,11 @@ const optimalTunConfig = {
 const getProxyRegion = (proxyName) => {
   for (const region in REGION_MAP) {
     const { keywords } = REGION_MAP[region]
-    const patternParts = keywords.map(kw => /^[a-zA-Z\s]+$/.test(kw) ? `(?<![a-zA-Z])${kw.replace(/\s+/g, '\\s+')}(?![a-zA-Z])` : kw)
+    const patternParts = keywords.map((kw) =>
+      /^[a-zA-Z\s]+$/.test(kw)
+        ? `(?<![a-zA-Z])${kw.replace(/\s+/g, '\\s+')}(?![a-zA-Z])`
+        : kw,
+    )
     if (new RegExp(patternParts.join('|'), 'i').test(proxyName)) return region
   }
   return '其他地区'
@@ -183,7 +200,7 @@ const main = (config) => {
   config.tun = optimalTunConfig
 
   const allProxies = config.proxies
-    .map((p) => { 
+    .map((p) => {
       if (Object.keys(REGION_MAP).includes(p.name)) {
         p.name += '01'
       }
@@ -199,23 +216,28 @@ const main = (config) => {
   })
 
   // 生成各地区 url-test 组
-  const autoRegionGroups = Object.entries(regionGroupsData).map(([name, proxies]) => {
-    // 判断是否需要关闭 lazy
-    const isNoLazy = name.includes('日本') || name.includes('台湾')
-    return {
-      name: name,
-      type: 'url-test',
-      proxies: proxies,
-      url: 'http://www.gstatic.com/generate_204',
-      interval: 60,
-      tolerance: 500,
-      lazy: !isNoLazy // 如果是日本、台湾，则 lazy 为 false
-    }
-  })
+  const autoRegionGroups = Object.entries(regionGroupsData).map(
+    ([name, proxies]) => {
+      // 判断是否需要关闭 lazy
+      const isNoLazy = name.includes('日本') || name.includes('台湾')
+      return {
+        name: name,
+        type: 'url-test',
+        proxies: proxies,
+        url: 'http://www.gstatic.com/generate_204',
+        interval: 60,
+        tolerance: 500,
+        lazy: !isNoLazy, // 如果是日本、台湾，则 lazy 为 false
+      }
+    },
+  )
   autoRegionGroups.sort((a, b) => {
-      const order = Object.keys(REGION_MAP)
-      return (order.indexOf(a.name) === -1 ? 99 : order.indexOf(a.name)) - (order.indexOf(b.name) === -1 ? 99 : order.indexOf(b.name))
-    })
+    const order = Object.keys(REGION_MAP)
+    return (
+      (order.indexOf(a.name) === -1 ? 99 : order.indexOf(a.name)) -
+      (order.indexOf(b.name) === -1 ? 99 : order.indexOf(b.name))
+    )
+  })
 
   // --- 策略组构建 ---
 
@@ -227,23 +249,27 @@ const main = (config) => {
     url: 'http://www.gstatic.com/generate_204',
     interval: 60,
     tolerance: 400,
-    lazy: false // 全球组通常作为兜底，关闭 lazy
+    lazy: false, // 全球组通常作为兜底，关闭 lazy
   }
 
-  const candidateProxies = [AUTO_GROUP, MANUAL_GROUP, ...autoRegionGroups.map(g => g.name)]
+  const candidateProxies = [
+    AUTO_GROUP,
+    MANUAL_GROUP,
+    ...autoRegionGroups.map((g) => g.name),
+  ]
 
   // 1️⃣ 首选 (Select)
   const primarySelectGroup = {
     name: PRIMARY_SELECT,
     type: 'select',
-    proxies: candidateProxies
+    proxies: candidateProxies,
   }
 
   // 2️⃣ 次选 (Select)
   const secondarySelectGroup = {
     name: SECONDARY_SELECT,
     type: 'select',
-    proxies: [...candidateProxies, DIRECT_GROUP]
+    proxies: [...candidateProxies, DIRECT_GROUP],
   }
 
   // PROXY 主出口 (Fallback)
@@ -252,22 +278,35 @@ const main = (config) => {
     type: 'fallback',
     proxies: [PRIMARY_SELECT, SECONDARY_SELECT],
     url: 'http://www.gstatic.com/generate_204',
-    interval: 30
+    interval: 30,
   }
 
-  const manualGroup = { name: MANUAL_GROUP, type: 'select', proxies: allProxies }
-  const defaultGroup = { name: DEFAULT_GROUP, type: 'select', proxies: [PROXY_GROUP, DIRECT_GROUP] }
-  const adsGroup = { name: ADS_GROUP, type: 'select', proxies: [REJECT_GROUP, DIRECT_GROUP] }
+  const manualGroup = {
+    name: MANUAL_GROUP,
+    type: 'select',
+    proxies: allProxies,
+  }
+  const defaultGroup = {
+    name: DEFAULT_GROUP,
+    type: 'select',
+    proxies: [PROXY_GROUP, DIRECT_GROUP],
+  }
+  const adsGroup = {
+    name: ADS_GROUP,
+    type: 'select',
+    proxies: [REJECT_GROUP, DIRECT_GROUP],
+  }
 
   // 组装策略组列表
   config['proxy-groups'] = [
-    proxyGroup,           // PROXY
-    primarySelectGroup,   
-    secondarySelectGroup,  
+    proxyGroup, // PROXY
+    primarySelectGroup,
+    secondarySelectGroup,
     manualGroup,
     defaultGroup,
     adsGroup,
-    autoAllGroup, ...autoRegionGroups    // 地区组放在最后
+    autoAllGroup,
+    ...autoRegionGroups, // 地区组放在最后
   ]
 
   // --- 规则部分 ---
@@ -278,13 +317,13 @@ const main = (config) => {
 
   const regionRules = Object.entries(REGION_MAP)
     .filter(([name]) => regionGroupsData[name])
-    .flatMap(([name, data]) => data.domains.map(d => createRule(d, name)))
+    .flatMap(([name, data]) => data.domains.map((d) => createRule(d, name)))
 
   config.rules = [
     ...CUSTOM_PRIORITY_RULES,
-    ...CUSTOM_BLOCKLIST.map(d => createRule(d, REJECT_GROUP)),
-    ...CUSTOM_BLACKLIST.map(d => createRule(d, PROXY_GROUP)),
-    ...CUSTOM_WHITELIST.map(d => createRule(d, DIRECT_GROUP)),
+    ...CUSTOM_BLOCKLIST.map((d) => createRule(d, REJECT_GROUP)),
+    ...CUSTOM_BLACKLIST.map((d) => createRule(d, PROXY_GROUP)),
+    ...CUSTOM_WHITELIST.map((d) => createRule(d, DIRECT_GROUP)),
     ...regionRules,
     `GEOSITE,category-ads-all,${ADS_GROUP}`,
     `GEOSITE,private,${DIRECT_GROUP}`,
@@ -292,7 +331,7 @@ const main = (config) => {
     IS_GFW_BLACKLIST_ENABLED ? `GEOSITE,gfw,${PROXY_GROUP}` : undefined,
     IS_DNS_ENABLED ? `GEOIP,CN,${DIRECT_GROUP}` : false,
     ...CUSTOM_FALLBACK_RULES,
-    `MATCH,${DEFAULT_GROUP}`
+    `MATCH,${DEFAULT_GROUP}`,
   ].filter(Boolean)
 
   return config
