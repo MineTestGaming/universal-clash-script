@@ -43,6 +43,27 @@ const CUSTOM_FALLBACK_RULES = [
 const PROXY_FILTER = /(http.+\..+)|请|剩余|套餐|流量|优惠|活动|到期|过期|网址/i
 const IS_GFW_BLACKLIST_ENABLED = true
 const IS_DNS_ENABLED = true
+const REGION_ORDER = [
+  '🇭🇰 香港',
+  '🇹🇼 台湾',
+  '🇯🇵 日本',
+  '🇸🇬 新加坡',
+  '🇺🇸 美国',
+  '🇰🇷 韩国',
+  '🇬🇧 英国',
+  '🇩🇪 德国',
+  '🇫🇷 法国',
+  '🇳🇱 荷兰',
+  '🇨🇦 加拿大',
+  '🇦🇺 澳大利亚',
+  '🇻🇳 越南',
+  '🇹🇭 泰国',
+  '🇲🇾 马来西亚',
+  '🇮🇳 印度',
+  '🇹🇷 土耳其',
+  '🇷🇺 俄罗斯',
+  '其他地区',
+]
 
 // --- 3. 地区配置中心 ---
 const REGION_MAP = {
@@ -61,16 +82,53 @@ const REGION_MAP = {
       'gamer.com.tw',
     ],
   },
-  '🇰🇷 韩国': {
-    keywords: ['🇰🇷', 'KR', 'Korea', 'South Korea', '韩国'],
-    domains: [],
-  },
   '🇯🇵 日本': {
     keywords: ['🇯🇵', 'JP', 'Japan', '日本'],
     domains: ['dmm.co.jp', 'abema.tv', 'nicovideo.jp'],
   },
   '🇸🇬 新加坡': {
     keywords: ['🇸🇬', 'SG', 'Singapore', '新加坡', '狮城'],
+    domains: [],
+  },
+  '🇺🇸 美国': {
+    keywords: ['🇺🇸', 'US', 'USA', 'United States', 'America', '美国'],
+    domains: [
+      'max.com',
+      'hulu.com',
+      'disneyplus.com',
+      'tv.youtube.com',
+      'cdn.usefathom.com',
+      'claude.ai',
+      'anthropic.com',
+      'claudeusercontent.com',
+    ],
+  },
+  '🇰🇷 韩国': {
+    keywords: ['🇰🇷', 'KR', 'Korea', 'South Korea', '韩国'],
+    domains: [],
+  },
+  '🇬🇧 英国': {
+    keywords: ['🇬🇧', 'UK', 'United Kingdom', 'England', '英国'],
+    domains: ['bbc.co.uk'],
+  },
+  '🇩🇪 德国': {
+    keywords: ['🇩🇪', 'DE', 'Germany', '德国'],
+    domains: [],
+  },
+  '🇫🇷 法国': {
+    keywords: ['🇫🇷', 'FR', 'France', '法国'],
+    domains: [],
+  },
+  '🇳🇱 荷兰': {
+    keywords: ['🇳🇱', 'NL', 'Netherlands', '荷兰'],
+    domains: [],
+  },
+  '🇨🇦 加拿大': {
+    keywords: ['🇨🇦', 'CA', 'Canada', '加拿大'],
+    domains: [],
+  },
+  '🇦🇺 澳大利亚': {
+    keywords: ['🇦🇺', 'AU', 'Australia', '澳大利亚', '澳洲'],
     domains: [],
   },
   '🇻🇳 越南': {
@@ -96,43 +154,6 @@ const REGION_MAP = {
   '🇷🇺 俄罗斯': {
     keywords: ['🇷🇺', 'RU', 'Russia', '俄罗斯'],
     domains: [],
-  },
-  '🇦🇺 澳大利亚': {
-    keywords: ['🇦🇺', 'AU', 'Australia', '澳大利亚', '澳洲'],
-    domains: [],
-  },
-  '🇩🇪 德国': {
-    keywords: ['🇩🇪', 'DE', 'Germany', '德国'],
-    domains: [],
-  },
-  '🇫🇷 法国': {
-    keywords: ['🇫🇷', 'FR', 'France', '法国'],
-    domains: [],
-  },
-  '🇳🇱 荷兰': {
-    keywords: ['🇳🇱', 'NL', 'Netherlands', '荷兰'],
-    domains: [],
-  },
-  '🇬🇧 英国': {
-    keywords: ['🇬🇧', 'UK', 'United Kingdom', 'England', '英国'],
-    domains: ['bbc.co.uk'],
-  },
-  '🇨🇦 加拿大': {
-    keywords: ['🇨🇦', 'CA', 'Canada', '加拿大'],
-    domains: [],
-  },
-  '🇺🇸 美国': {
-    keywords: ['🇺🇸', 'US', 'USA', 'United States', 'America', '美国'],
-    domains: [
-      'max.com',
-      'hulu.com',
-      'disneyplus.com',
-      'tv.youtube.com',
-      'cdn.usefathom.com',
-      'claude.ai',
-      'anthropic.com',
-      'claudeusercontent.com',
-    ],
   },
 }
 
@@ -232,7 +253,7 @@ const main = (config) => {
     },
   )
   autoRegionGroups.sort((a, b) => {
-    const order = Object.keys(REGION_MAP)
+    const order = REGION_ORDER
     return (
       (order.indexOf(a.name) === -1 ? 99 : order.indexOf(a.name)) -
       (order.indexOf(b.name) === -1 ? 99 : order.indexOf(b.name))
