@@ -155,6 +155,17 @@ const optimalDnsConfig = {
   'default-nameserver':['223.5.5.5'], // 解析 DNS 域名
 }
 
+const optimalTunConfig = {
+  enable: true,
+  stack: 'gvisor',
+  'auto-route': true,
+  'auto-redirect': true,
+  'auto-detect-interface': true,
+  mtu: 1500,
+  gso: true,
+  'gso-max-size': 65536,
+}
+
 // --- 5. 辅助函数 ---
 const getProxyRegion = (proxyName) => {
   for (const region in REGION_MAP) {
@@ -169,6 +180,7 @@ const getProxyRegion = (proxyName) => {
 const main = (config) => {
   config = { proxies: config.proxies }
   config.dns = optimalDnsConfig
+  config.tun = optimalTunConfig
 
   const allProxies = config.proxies
     .map((p) => { 
