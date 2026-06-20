@@ -449,5 +449,6 @@ rules:
   - GEOSITE,private,DIRECT
   - GEOSITE,cn,DIRECT
   - GEOSITE,gfw,PROXY
+  - GEOIP,private,DIRECT
   - GEOIP,CN,DIRECT
   - MATCH,DEFAULT
