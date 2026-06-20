@@ -108,22 +108,6 @@ rule-providers:
       - DOMAIN-SUFFIX,dmm.co.jp
       - DOMAIN-SUFFIX,abema.tv
       - DOMAIN-SUFFIX,nicovideo.jp
-
-  region_uk:
-    type: inline
-    behavior: classical
-    payload:
-      - DOMAIN-SUFFIX,bbc.co.uk
-
-  region_us:
-    type: inline
-    behavior: classical
-    payload:
-      - DOMAIN-SUFFIX,max.com
-      - DOMAIN-SUFFIX,hulu.com
-      - DOMAIN-SUFFIX,disneyplus.com
-      - DOMAIN-SUFFIX,tv.youtube.com
-      - DOMAIN-SUFFIX,cdn.usefathom.com
       # Claude
       - DOMAIN-SUFFIX,claude.ai
       - DOMAIN-SUFFIX,anthropic.com
@@ -141,6 +125,22 @@ rule-providers:
       - RULE-SET,Anthropic
       - RULE-SET,OpenAI
       - RULE-SET,Google
+
+  region_uk:
+    type: inline
+    behavior: classical
+    payload:
+      - DOMAIN-SUFFIX,bbc.co.uk
+
+  region_us:
+    type: inline
+    behavior: classical
+    payload:
+      - DOMAIN-SUFFIX,max.com
+      - DOMAIN-SUFFIX,hulu.com
+      - DOMAIN-SUFFIX,disneyplus.com
+      - DOMAIN-SUFFIX,tv.youtube.com
+      - DOMAIN-SUFFIX,cdn.usefathom.com
 
 mixed-port: 7890
 allow-lan: true
