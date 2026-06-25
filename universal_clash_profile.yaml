@@ -68,6 +68,68 @@ rule-providers:
       - DOMAIN-SUFFIX,ppzhilian.com
       - DOMAIN-SUFFIX,gh-proxy.org
       - DOMAIN-SUFFIX,gh-proxy.com
+      - DOMAIN-SUFFIX,akamaized.net
+      - DOMAIN-SUFFIX,aki-game.com
+      - DOMAIN-SUFFIX,amap.cn
+      - DOMAIN-SUFFIX,amd.com
+      - DOMAIN-SUFFIX,ati.com
+      - DOMAIN-SUFFIX,bcbits.com
+      - DOMAIN-SUFFIX,bemaniso.ws
+      - DOMAIN-SUFFIX,bluestacks.com
+      - DOMAIN-SUFFIX,bocchi.rocks
+      - DOMAIN-SUFFIX,breached.to
+      - DOMAIN-SUFFIX,challenges.cloudflare.com
+      - DOMAIN-SUFFIX,cosmiccat.top
+      - DOMAIN-SUFFIX,d4dj-groovy-mix.com
+      - DOMAIN-SUFFIX,deepl.com
+      - DOMAIN-SUFFIX,download-cdn.jetbrains.com
+      - DOMAIN-SUFFIX,download.epicgames.com
+      - DOMAIN-SUFFIX,eos-cloudsaves-live.s3.amazonaws.com
+      - DOMAIN-SUFFIX,epicgamess.com
+      - DOMAIN-SUFFIX,ewt360.com
+      - DOMAIN-SUFFIX,gamewith.jp
+      - DOMAIN-SUFFIX,gaojiua.com
+      - DOMAIN-SUFFIX,getmusicbee.com
+      - DOMAIN-SUFFIX,ghxi.com
+      - DOMAIN-SUFFIX,gl-payment.gree-apps.net
+      - DOMAIN-SUFFIX,kurogames.com
+      - DOMAIN-SUFFIX,lowiro.com
+      - DOMAIN-SUFFIX,msftconnecttest.com
+      - DOMAIN-SUFFIX,music.xianqiao.wang
+      - DOMAIN-SUFFIX,musicbrainz.org
+      - DOMAIN-SUFFIX,nothing.sh
+      - DOMAIN-SUFFIX,ppy.sh
+      - DOMAIN-SUFFIX,prd-priconne-redive.akamaized.nett
+      - DOMAIN-SUFFIX,quavergame.com
+      - DOMAIN-SUFFIX,seewo.com
+      - DOMAIN-SUFFIX,sharepoint.com
+      - DOMAIN-SUFFIX,shiguangpu.com
+      - DOMAIN-SUFFIX,skype.com
+      - DOMAIN-SUFFIX,spacedesk.net
+      - DOMAIN-SUFFIX,staticbrainz.org
+      - DOMAIN-SUFFIX,steamcontent.com
+      - DOMAIN-SUFFIX,udacity.com
+      - DOMAIN-SUFFIX,waaa.moe
+      - DOMAIN-SUFFIX,wiki.arcaea.cn
+      - DOMAIN-SUFFIX,wwfs.games
+      - DOMAIN-SUFFIX,yangcong345.com
+      - DOMAIN-SUFFIX,yangcongxueyuan.com
+      - DOMAIN-SUFFIX,zris.work
+      - DOMAIN-SUFFIX,zsdqzx.net
+      - DOMAIN-SUFFIX,cowtransfer.com
+      - DOMAIN-SUFFIX,vivo.com
+      - DOMAIN-SUFFIX,feishu.cn
+      - DOMAIN-SUFFIX,mujicv.com
+      - DOMAIN-SUFFIX,qingline.net
+      - DOMAIN-SUFFIX,oray.com
+      - DOMAIN-SUFFIX,epicgamescdn.com
+      - DOMAIN-SUFFIX,loli.net
+      - DOMAIN-SUFFIX,cloudstudio.club
+      - DOMAIN-SUFFIX,steamdb.info
+      - DOMAIN-SUFFIX,flyme.com
+      - DOMAIN-SUFFIX,hypergryph.com
+      - DOMAIN-SUFFIX,frp.cool
+      - DOMAIN-SUFFIX,vcb-s.com
 
   # 自定义屏蔽名单
   custom_block_list:
@@ -162,21 +224,15 @@ dns:
   fake-ip-filter:
     - geosite:private
     - geosite:connectivity-check
-  # 说明：这里 DNS 的目标是尽快匹配 GEOIP,CN。
-  # 因此优先使用国内 DNS，以国外 DNS 作为兜底，nameserver 和 fallback 会并发请求。
-  # 走到 GEOIP 之前，外网站点本身已经会被导向代理；用 nameserver-policy 二次分流收益不大。
   nameserver:
     - https://doh.pub/dns-query
   fallback:
     - tls://8.8.4.4#PROXY
     - tls://1.1.1.1#PROXY
-  # 如果国内 DNS 返回的结果不是 CN IP，则采用 fallback 结果。
   fallback-filter:
     geoip: true
-  # 解析代理服务器域名。
   proxy-server-nameserver:
     - https://doh.pub/dns-query
-  # 解析 DNS 服务器域名。
   default-nameserver:
     - 223.5.5.5
 
@@ -186,7 +242,6 @@ tun:
   auto-route: true
   auto-redirect: true
   auto-detect-interface: true
-  # MTU 过高，会导致 WSL mirrored 模式异常
   mtu: 1500
   gso: true
   gso-max-size: 65536
@@ -246,7 +301,6 @@ proxy-groups:
 
   - name: 'PROXY'
     type: fallback
-    # 主出口：在首选 / 次选之间自动回退。
     proxies:
       - '1️⃣ 首选'
       - '2️⃣ 次选'
@@ -255,19 +309,16 @@ proxy-groups:
 
   - name: 'DEFAULT'
     type: select
-    # 默认出口：处理所有未命中规则的流量。
     proxies:
       - PROXY
       - DIRECT
 
   - name: 'MANUAL'
     type: select
-    # 手动节点池：直接暴露所有 provider 节点，便于临时手选单节点。
     include-all-providers: true
 
   - name: 'ADS'
     type: select
-    # 广告出口：默认 REJECT，也可手动切到 DIRECT。
     proxies:
       - REJECT
       - DIRECT
