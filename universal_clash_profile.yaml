@@ -254,7 +254,9 @@ proxy-groups:
       - '🌍 全球'
       - '🇭🇰 香港节点'
       - '🇹🇼 台湾节点'
+      - '🇹🇼 台湾节点 负载均衡'
       - '🇯🇵 日本节点'
+      - '🇯🇵 日本节点 负载均衡'
       - '🇸🇬 新加坡节点'
       - '🇺🇸 美国节点'
       - '🇰🇷 韩国节点'
@@ -280,7 +282,9 @@ proxy-groups:
       - '🌍 全球'
       - '🇭🇰 香港节点'
       - '🇹🇼 台湾节点'
+      - '🇹🇼 台湾节点 负载均衡'
       - '🇯🇵 日本节点'
+      - '🇯🇵 日本节点 负载均衡'
       - '🇸🇬 新加坡节点'
       - '🇺🇸 美国节点'
       - '🇰🇷 韩国节点'
@@ -332,6 +336,14 @@ proxy-groups:
     tolerance: 400
     lazy: false
 
+  - name: '🌍 全球 负载均衡'
+    type: load-balance
+    include-all-providers: true
+    url: https://www.gstatic.com/generate_204
+    interval: 60
+    strategy: consistent-hashing
+    lazy: false
+
   - name: '🇭🇰 香港节点'
     type: url-test
     include-all-providers: true
@@ -349,6 +361,15 @@ proxy-groups:
     tolerance: 500
     lazy: false
 
+  - name: '🇹🇼 台湾节点 负载均衡'
+    type: load-balance
+    include-all-providers: true
+    filter: '(?i)🇹🇼|(?<![A-Za-z])TW(?![A-Za-z])|Taiwan|台湾|台灣'
+    url: https://www.gstatic.com/generate_204
+    interval: 60
+    strategy: consistent-hashing
+    lazy: false
+
   - name: '🇯🇵 日本节点'
     type: url-test
     include-all-providers: true
@@ -356,6 +377,15 @@ proxy-groups:
     url: https://www.gstatic.com/generate_204
     interval: 60
     tolerance: 500
+    lazy: false
+
+  - name: '🇯🇵 日本节点 负载均衡'
+    type: load-balance
+    include-all-providers: true
+    filter: '(?i)🇯🇵|(?<![A-Za-z])JP(?![A-Za-z])|Japan|日本'
+    url: https://www.gstatic.com/generate_204
+    interval: 60
+    strategy: consistent-hashing
     lazy: false
 
   - name: '🇸🇬 新加坡节点'
