@@ -131,6 +131,19 @@ rule-providers:
       - DOMAIN-SUFFIX,frp.cool
       - DOMAIN-SUFFIX,vcb-s.com
       - DOMAIN-SUFFIX,acgrip.com
+      # Apple
+      - DOMAIN-SUFFIX,apple.com
+      - DOMAIN-SUFFIX,apple.co
+      - DOMAIN-SUFFIX,icloud.com
+      - DOMAIN-SUFFIX,me.com
+      - DOMAIN-SUFFIX,mac.com
+      - DOMAIN-SUFFIX,mzstatic.com
+      - DOMAIN-SUFFIX,cdn-apple.com
+      - DOMAIN-SUFFIX,aaplimg.com
+      - DOMAIN-SUFFIX,apple-cloudkit.com
+      - DOMAIN-SUFFIX,apple-mapkit.com
+      - DOMAIN-SUFFIX,apple-store.com
+      - DOMAIN-SUFFIX,applestore.com
 
   # 自定义屏蔽名单
   custom_block_list:
