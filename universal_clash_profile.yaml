@@ -47,6 +47,13 @@ rule-providers:
         path: ./ruleset/Google.yaml
         interval: 86400
 
+    Apple:
+        type: http
+        behavior: domain
+        url: "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Apple/Apple_Domain.yaml"
+        path: ./ruleset/Apple.yaml
+        interval: 86400
+
     # 自定义代理名单
     custom_black_list:
         type: inline
@@ -705,6 +712,12 @@ proxy-groups:
       strategy: consistent-hashing
       lazy: false
 
+    - name: "Apple 规则"
+      type: select
+      proxies:
+          - PROXY
+          - DIRECT
+
 rules:
     - RULE-SET,custom_block_list,REJECT
     - RULE-SET,custom_black_list,PROXY
@@ -715,6 +728,8 @@ rules:
     - RULE-SET,region_jp,🇯🇵 日本节点
     - RULE-SET,region_uk,🇬🇧 英国节点
     - RULE-SET,region_us,🇺🇸 美国节点
+
+    - RULE-SET,Apple,Apple 规则
 
     - GEOSITE,category-ads-all,ADS
     - GEOSITE,private,DIRECT
