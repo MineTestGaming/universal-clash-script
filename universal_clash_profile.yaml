@@ -252,27 +252,45 @@ proxy-groups:
       type: select
       proxies:
           - "🌍 全球"
+          - "🌍 全球 负载均衡"
           - "🇭🇰 香港节点"
+          - "🇭🇰 香港节点 负载均衡"
           - "🇹🇼 台湾节点"
           - "🇹🇼 台湾节点 负载均衡"
           - "🇯🇵 日本节点"
           - "🇯🇵 日本节点 负载均衡"
           - "🇸🇬 新加坡节点"
+          - "🇸🇬 新加坡节点 负载均衡"
           - "🇺🇸 美国节点"
+          - "🇺🇸 美国节点 负载均衡"
           - "🇰🇷 韩国节点"
+          - "🇰🇷 韩国节点 负载均衡"
           - "🇬🇧 英国节点"
+          - "🇬🇧 英国节点 负载均衡"
           - "🇩🇪 德国节点"
+          - "🇩🇪 德国节点 负载均衡"
           - "🇫🇷 法国节点"
+          - "🇫🇷 法国节点 负载均衡"
           - "🇳🇱 荷兰节点"
+          - "🇳🇱 荷兰节点 负载均衡"
           - "🇨🇦 加拿大节点"
+          - "🇨🇦 加拿大节点 负载均衡"
           - "🇦🇺 澳大利亚节点"
+          - "🇦🇺 澳大利亚节点 负载均衡"
           - "🇻🇳 越南节点"
+          - "🇻🇳 越南节点 负载均衡"
           - "🇹🇭 泰国节点"
+          - "🇹🇭 泰国节点 负载均衡"
           - "🇲🇾 马来西亚节点"
+          - "🇲🇾 马来西亚节点 负载均衡"
           - "🇮🇳 印度节点"
+          - "🇮🇳 印度节点 负载均衡"
           - "🇹🇷 土耳其节点"
+          - "🇹🇷 土耳其节点 负载均衡"
           - "🇷🇺 俄罗斯节点"
+          - "🇷🇺 俄罗斯节点 负载均衡"
           - "其他地区"
+          - "其他地区 负载均衡"
           - "MANUAL"
           - "DIRECT"
 
@@ -280,27 +298,45 @@ proxy-groups:
       type: select
       proxies:
           - "🌍 全球"
+          - "🌍 全球 负载均衡"
           - "🇭🇰 香港节点"
+          - "🇭🇰 香港节点 负载均衡"
           - "🇹🇼 台湾节点"
           - "🇹🇼 台湾节点 负载均衡"
           - "🇯🇵 日本节点"
           - "🇯🇵 日本节点 负载均衡"
           - "🇸🇬 新加坡节点"
+          - "🇸🇬 新加坡节点 负载均衡"
           - "🇺🇸 美国节点"
+          - "🇺🇸 美国节点 负载均衡"
           - "🇰🇷 韩国节点"
+          - "🇰🇷 韩国节点 负载均衡"
           - "🇬🇧 英国节点"
+          - "🇬🇧 英国节点 负载均衡"
           - "🇩🇪 德国节点"
+          - "🇩🇪 德国节点 负载均衡"
           - "🇫🇷 法国节点"
+          - "🇫🇷 法国节点 负载均衡"
           - "🇳🇱 荷兰节点"
+          - "🇳🇱 荷兰节点 负载均衡"
           - "🇨🇦 加拿大节点"
+          - "🇨🇦 加拿大节点 负载均衡"
           - "🇦🇺 澳大利亚节点"
+          - "🇦🇺 澳大利亚节点 负载均衡"
           - "🇻🇳 越南节点"
+          - "🇻🇳 越南节点 负载均衡"
           - "🇹🇭 泰国节点"
+          - "🇹🇭 泰国节点 负载均衡"
           - "🇲🇾 马来西亚节点"
+          - "🇲🇾 马来西亚节点 负载均衡"
           - "🇮🇳 印度节点"
+          - "🇮🇳 印度节点 负载均衡"
           - "🇹🇷 土耳其节点"
+          - "🇹🇷 土耳其节点 负载均衡"
           - "🇷🇺 俄罗斯节点"
+          - "🇷🇺 俄罗斯节点 负载均衡"
           - "其他地区"
+          - "其他地区 负载均衡"
           - "MANUAL"
           - "DIRECT"
 
@@ -352,6 +388,15 @@ proxy-groups:
       interval: 60
       tolerance: 500
 
+    - name: "🇭🇰 香港节点 负载均衡"
+      type: load-balance
+      include-all-providers: true
+      filter: '(?i)🇭🇰|(?<![A-Za-z])HK(?![A-Za-z])|Hong\s*Kong|香港'
+      url: https://www.gstatic.com/generate_204
+      interval: 60
+      strategy: consistent-hashing
+      lazy: false
+
     - name: "🇹🇼 台湾节点"
       type: url-test
       include-all-providers: true
@@ -396,6 +441,15 @@ proxy-groups:
       interval: 60
       tolerance: 500
 
+    - name: "🇸🇬 新加坡节点 负载均衡"
+      type: load-balance
+      include-all-providers: true
+      filter: "(?i)🇸🇬|(?<![A-Za-z])SG(?![A-Za-z])|Singapore|新加坡|狮城"
+      url: https://www.gstatic.com/generate_204
+      interval: 60
+      strategy: consistent-hashing
+      lazy: false
+
     - name: "🇺🇸 美国节点"
       type: url-test
       include-all-providers: true
@@ -403,6 +457,15 @@ proxy-groups:
       url: https://www.gstatic.com/generate_204
       interval: 60
       tolerance: 500
+
+    - name: "🇺🇸 美国节点 负载均衡"
+      type: load-balance
+      include-all-providers: true
+      filter: '(?i)🇺🇸|(?<![A-Za-z])US(?![A-Za-z])|USA|United\s*States|America|美国'
+      url: https://www.gstatic.com/generate_204
+      interval: 60
+      strategy: consistent-hashing
+      lazy: false
 
     - name: "🇰🇷 韩国节点"
       type: url-test
@@ -412,6 +475,15 @@ proxy-groups:
       interval: 60
       tolerance: 500
 
+    - name: "🇰🇷 韩国节点 负载均衡"
+      type: load-balance
+      include-all-providers: true
+      filter: '(?i)🇰🇷|(?<![A-Za-z])KR(?![A-Za-z])|South\s*Korea|Korea|韩国'
+      url: https://www.gstatic.com/generate_204
+      interval: 60
+      strategy: consistent-hashing
+      lazy: false
+
     - name: "🇬🇧 英国节点"
       type: url-test
       include-all-providers: true
@@ -419,6 +491,15 @@ proxy-groups:
       url: https://www.gstatic.com/generate_204
       interval: 60
       tolerance: 500
+
+    - name: "🇬🇧 英国节点 负载均衡"
+      type: load-balance
+      include-all-providers: true
+      filter: '(?i)🇬🇧|(?<![A-Za-z])UK(?![A-Za-z])|United\s*Kingdom|England|英国'
+      url: https://www.gstatic.com/generate_204
+      interval: 60
+      strategy: consistent-hashing
+      lazy: false
 
     - name: "🇩🇪 德国节点"
       type: url-test
@@ -428,6 +509,15 @@ proxy-groups:
       interval: 60
       tolerance: 500
 
+    - name: "🇩🇪 德国节点 负载均衡"
+      type: load-balance
+      include-all-providers: true
+      filter: "(?i)🇩🇪|(?<![A-Za-z])DE(?![A-Za-z])|Germany|德国"
+      url: https://www.gstatic.com/generate_204
+      interval: 60
+      strategy: consistent-hashing
+      lazy: false
+
     - name: "🇫🇷 法国节点"
       type: url-test
       include-all-providers: true
@@ -435,6 +525,15 @@ proxy-groups:
       url: https://www.gstatic.com/generate_204
       interval: 60
       tolerance: 500
+
+    - name: "🇫🇷 法国节点 负载均衡"
+      type: load-balance
+      include-all-providers: true
+      filter: "(?i)🇫🇷|(?<![A-Za-z])FR(?![A-Za-z])|France|法国"
+      url: https://www.gstatic.com/generate_204
+      interval: 60
+      strategy: consistent-hashing
+      lazy: false
 
     - name: "🇳🇱 荷兰节点"
       type: url-test
@@ -444,6 +543,15 @@ proxy-groups:
       interval: 60
       tolerance: 500
 
+    - name: "🇳🇱 荷兰节点 负载均衡"
+      type: load-balance
+      include-all-providers: true
+      filter: "(?i)🇳🇱|(?<![A-Za-z])NL(?![A-Za-z])|Netherlands|荷兰"
+      url: https://www.gstatic.com/generate_204
+      interval: 60
+      strategy: consistent-hashing
+      lazy: false
+
     - name: "🇨🇦 加拿大节点"
       type: url-test
       include-all-providers: true
@@ -451,6 +559,15 @@ proxy-groups:
       url: https://www.gstatic.com/generate_204
       interval: 60
       tolerance: 500
+
+    - name: "🇨🇦 加拿大节点 负载均衡"
+      type: load-balance
+      include-all-providers: true
+      filter: "(?i)🇨🇦|(?<![A-Za-z])CA(?![A-Za-z])|Canada|加拿大"
+      url: https://www.gstatic.com/generate_204
+      interval: 60
+      strategy: consistent-hashing
+      lazy: false
 
     - name: "🇦🇺 澳大利亚节点"
       type: url-test
@@ -460,6 +577,15 @@ proxy-groups:
       interval: 60
       tolerance: 500
 
+    - name: "🇦🇺 澳大利亚节点 负载均衡"
+      type: load-balance
+      include-all-providers: true
+      filter: "(?i)🇦🇺|(?<![A-Za-z])AU(?![A-Za-z])|Australia|澳大利亚|澳洲"
+      url: https://www.gstatic.com/generate_204
+      interval: 60
+      strategy: consistent-hashing
+      lazy: false
+
     - name: "🇻🇳 越南节点"
       type: url-test
       include-all-providers: true
@@ -467,6 +593,15 @@ proxy-groups:
       url: https://www.gstatic.com/generate_204
       interval: 60
       tolerance: 500
+
+    - name: "🇻🇳 越南节点 负载均衡"
+      type: load-balance
+      include-all-providers: true
+      filter: "(?i)🇻🇳|(?<![A-Za-z])VN(?![A-Za-z])|Vietnam|越南"
+      url: https://www.gstatic.com/generate_204
+      interval: 60
+      strategy: consistent-hashing
+      lazy: false
 
     - name: "🇹🇭 泰国节点"
       type: url-test
@@ -476,6 +611,15 @@ proxy-groups:
       interval: 60
       tolerance: 500
 
+    - name: "🇹🇭 泰国节点 负载均衡"
+      type: load-balance
+      include-all-providers: true
+      filter: "(?i)🇹🇭|(?<![A-Za-z])TH(?![A-Za-z])|Thailand|泰国"
+      url: https://www.gstatic.com/generate_204
+      interval: 60
+      strategy: consistent-hashing
+      lazy: false
+
     - name: "🇲🇾 马来西亚节点"
       type: url-test
       include-all-providers: true
@@ -483,6 +627,15 @@ proxy-groups:
       url: https://www.gstatic.com/generate_204
       interval: 60
       tolerance: 500
+
+    - name: "🇲🇾 马来西亚节点 负载均衡"
+      type: load-balance
+      include-all-providers: true
+      filter: "(?i)🇲🇾|(?<![A-Za-z])MY(?![A-Za-z])|Malaysia|马来西亚|大马"
+      url: https://www.gstatic.com/generate_204
+      interval: 60
+      strategy: consistent-hashing
+      lazy: false
 
     - name: "🇮🇳 印度节点"
       type: url-test
@@ -492,6 +645,15 @@ proxy-groups:
       interval: 60
       tolerance: 500
 
+    - name: "🇮🇳 印度节点 负载均衡"
+      type: load-balance
+      include-all-providers: true
+      filter: "(?i)🇮🇳|(?<![A-Za-z])IN(?![A-Za-z])|India|印度"
+      url: https://www.gstatic.com/generate_204
+      interval: 60
+      strategy: consistent-hashing
+      lazy: false
+
     - name: "🇹🇷 土耳其节点"
       type: url-test
       include-all-providers: true
@@ -499,6 +661,15 @@ proxy-groups:
       url: https://www.gstatic.com/generate_204
       interval: 60
       tolerance: 500
+
+    - name: "🇹🇷 土耳其节点 负载均衡"
+      type: load-balance
+      include-all-providers: true
+      filter: "(?i)🇹🇷|(?<![A-Za-z])TR(?![A-Za-z])|Turkey|土耳其"
+      url: https://www.gstatic.com/generate_204
+      interval: 60
+      strategy: consistent-hashing
+      lazy: false
 
     - name: "🇷🇺 俄罗斯节点"
       type: url-test
@@ -508,6 +679,15 @@ proxy-groups:
       interval: 60
       tolerance: 500
 
+    - name: "🇷🇺 俄罗斯节点 负载均衡"
+      type: load-balance
+      include-all-providers: true
+      filter: "(?i)🇷🇺|(?<![A-Za-z])RU(?![A-Za-z])|Russia|俄罗斯"
+      url: https://www.gstatic.com/generate_204
+      interval: 60
+      strategy: consistent-hashing
+      lazy: false
+
     - name: "其他地区"
       type: url-test
       include-all-providers: true
@@ -515,6 +695,15 @@ proxy-groups:
       url: https://www.gstatic.com/generate_204
       interval: 60
       tolerance: 500
+
+    - name: "其他地区 负载均衡"
+      type: load-balance
+      include-all-providers: true
+      filter: '(?i)^(?!.*(🇭🇰|HK|Hong\s*Kong|香港|🇹🇼|TW|Taiwan|台湾|台灣|🇰🇷|KR|South\s*Korea|Korea|韩国|🇯🇵|JP|Japan|日本|🇸🇬|SG|Singapore|新加坡|狮城|🇻🇳|VN|Vietnam|越南|🇹🇭|TH|Thailand|泰国|🇲🇾|MY|Malaysia|马来西亚|大马|🇮🇳|IN|India|印度|🇹🇷|TR|Turkey|土耳其|🇷🇺|RU|Russia|俄罗斯|🇦🇺|AU|Australia|澳大利亚|澳洲|🇩🇪|DE|Germany|德国|🇫🇷|FR|France|法国|🇳🇱|NL|Netherlands|荷兰|🇬🇧|UK|United\s*Kingdom|England|英国|🇨🇦|CA|Canada|加拿大|🇺🇸|US|USA|United\s*States|America|美国)).+'
+      url: https://www.gstatic.com/generate_204
+      interval: 60
+      strategy: consistent-hashing
+      lazy: false
 
 rules:
     - RULE-SET,custom_block_list,REJECT
