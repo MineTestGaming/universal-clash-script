@@ -730,6 +730,7 @@ rules:
     - RULE-SET,region_us,🇺🇸 美国节点
 
     - RULE-SET,Apple,Apple 规则
+    - RULE-SET,Google,PROXY
 
     - GEOSITE,category-ads-all,ADS
     - GEOSITE,private,DIRECT
