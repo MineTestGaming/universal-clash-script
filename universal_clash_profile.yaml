@@ -48,6 +48,30 @@ rule-providers:
         path: ./ruleset/Pigeon.yaml
         interval: 86400
 
+    # ZCode / Z.ai
+    ZCode:
+        type: http
+        behavior: classical
+        url: "https://raw.githubusercontent.com/MineTestGaming/universal-clash-script/main/ZCode.yaml"
+        path: ./ruleset/ZCode.yaml
+        interval: 86400
+
+    # TRAE 中国版
+    TraeCN:
+        type: http
+        behavior: classical
+        url: "https://raw.githubusercontent.com/MineTestGaming/universal-clash-script/main/TraeCN.yaml"
+        path: ./ruleset/TraeCN.yaml
+        interval: 86400
+
+    # Qoder
+    Qoder:
+        type: http
+        behavior: classical
+        url: "https://raw.githubusercontent.com/MineTestGaming/universal-clash-script/main/Qoder.yaml"
+        path: ./ruleset/Qoder.yaml
+        interval: 86400
+
     Google:
         type: http
         behavior: classical
@@ -729,6 +753,9 @@ rules:
     - RULE-SET,custom_block_list,REJECT
     - RULE-SET,custom_black_list,PROXY
     - RULE-SET,Pigeon,PROXY
+    - RULE-SET,ZCode,PROXY
+    - RULE-SET,TraeCN,PROXY
+    - RULE-SET,Qoder,PROXY
     - RULE-SET,custom_white_list,DIRECT
 
     - RULE-SET,region_hk,🇭🇰 香港节点

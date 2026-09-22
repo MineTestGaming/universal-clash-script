@@ -1,0 +1,9 @@
+# ZCode / Z.ai
+# Mihomo / Clash classical rule provider
+# Updated: 2026-09-22
+#
+# 仅包含 ZCode 与其官方 Z.ai API 域名。
+
+payload:
+  - DOMAIN-SUFFIX,zcode.z.ai
+  - DOMAIN-SUFFIX,api.z.ai

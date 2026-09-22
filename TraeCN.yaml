@@ -1,0 +1,11 @@
+# TRAE 中国版
+# Mihomo / Clash classical rule provider
+# Updated: 2026-09-22
+#
+# 仅包含 TRAE 官方中国站及企业专属域名。
+# 通用 CDN、对象存储和火山引擎共享域名不纳入。
+
+payload:
+  - DOMAIN-SUFFIX,trae.cn
+  - DOMAIN-SUFFIX,trae.com.cn
+  - DOMAIN-SUFFIX,trae.volces.com
