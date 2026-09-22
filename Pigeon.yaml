@@ -1,0 +1,11 @@
+# Pigeon Games / 鸽游网络
+# Mihomo / Clash classical rule provider
+# Updated: 2026-09-22
+#
+# 仅包含确认属于鸽游的一方域名。
+# TapTap、Cloudflare、公共 CDN 等共享第三方域名不纳入，
+# 避免把无关流量一起代理。
+
+payload:
+  - DOMAIN-SUFFIX,pigeon-games.com
+  - DOMAIN-SUFFIX,pigeongames.net

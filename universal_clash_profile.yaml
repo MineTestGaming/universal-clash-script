@@ -40,6 +40,14 @@ rule-providers:
         path: ./ruleset/Copilot.yaml
         interval: 86400
 
+    # Pigeon Games / 鸽游网络
+    Pigeon:
+        type: http
+        behavior: classical
+        url: "https://raw.githubusercontent.com/MineTestGaming/universal-clash-script/main/Pigeon.yaml"
+        path: ./ruleset/Pigeon.yaml
+        interval: 86400
+
     Google:
         type: http
         behavior: classical
@@ -720,6 +728,7 @@ proxy-groups:
 rules:
     - RULE-SET,custom_block_list,REJECT
     - RULE-SET,custom_black_list,PROXY
+    - RULE-SET,Pigeon,PROXY
     - RULE-SET,custom_white_list,DIRECT
 
     - RULE-SET,region_hk,🇭🇰 香港节点
