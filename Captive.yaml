@@ -1,0 +1,29 @@
+payload:
+  # Android / Google / ChromeOS
+  - DOMAIN,connectivitycheck.gstatic.com
+  - DOMAIN,connectivitycheck.android.com
+  - DOMAIN,clients3.google.com
+  - DOMAIN,clients4.google.com
+  - DOMAIN,play.googleapis.com
+
+  # Xiaomi / MIUI
+  - DOMAIN,connect.rom.miui.com
+
+  # Huawei / HarmonyOS / EMUI
+  - DOMAIN,connectivitycheck.platform.hicloud.com
+
+  # vivo
+  - DOMAIN,wifi.vivo.com.cn
+
+  # Windows (some NCSI checks return 200 rather than 204)
+  - DOMAIN,msftconnecttest.com
+  - DOMAIN,msftncsi.com
+  - DOMAIN,edge-http.microsoft.com
+
+  # Apple (Success page, not 204)
+  - DOMAIN,captive.apple.com
+
+  # Linux GNOME / Firefox (success page checks)
+  - DOMAIN,nmcheck.gnome.org
+  - DOMAIN,detectportal.firefox.com
+
